@@ -47,7 +47,7 @@ export default function Page() {
 
         if (!res.ok) {
             console.error("data fetch Err");
-            alert("data fetch Err");
+            alert("data fetch Err");               
             return;
         }
 
@@ -127,7 +127,7 @@ export default function Page() {
 
     //bg-amber- test
     return (
-        <div className="w-full h-screen p-4 md:pt-10 bg-white">
+        <div className="w-full h-screen p-4 md:pt-10 bg-gray-200">
             {/* <SimpleSouthKoreaMapChart
             setColorByCount={setColorByCount}
             data={data}
@@ -144,29 +144,31 @@ export default function Page() {
         { data ?
             <div className="w-full h-screen pt-6">
                 {/* data 있음. 차트 구현 */}
-                <div className='w-full h-full flex flex-col [&>div]:mx-8'>
+                <div className='w-full h-full flex flex-col'>
                     <div className='h-[25%] px-2 mx-8 grid grid-cols-4 gap-4'>
-                        <ContainerCard />
+                        <ContainerCard />s
                         <ContainerCard />
                         <ContainerCard />
                         <ContainerCard />
                     </div>
-                    <div className='h-full px-2 mx-8 py-8 grid grid-cols-2 '>
-                        <div className='w-full h-full grid grid-rows-2'>
-                            <div className="h-[80%] p-4 shadow-xl text-neutral-700 rounded-xl">지역별 주차장 수</div>
-                            <div className='flex-1 grid grid-cols-2 gap-4'>
+                    <div className='h-full px-2 mx-8 py-8 grid grid-cols-2 gap-4'>
+                        <div className='w-full h-full grid grid-rows-2 gap-4'>
+                            <div className="h-full p-4 shadow-xl bg-gray-100 rounded-xl"> 
+                                <p className=" text-neutral-700 text-lg">지역별 주차장 수</p>    
+                            </div>
+                            <div className='flex-1 grid grid-cols-2 gap-5'>
                                 <Top5Card />
                                 <Top5Card />
                             </div>
                         </div>
 
-                        <div className='w-flex-1 h-full flex mx-2 flex-col'>
-                            <div className='w-full h-[30%] grid grid-cols-3 gap-2 mb-4 text-white'>
-                                <div className="w-full h-full shadow-xl text-neutral-700 rounded-xl p-4">주차장 구분</div>
-                                <div className="w-full h-full shadow-xl text-neutral-700 rounded-xl p-4">주차장 요금</div>
-                                <div className="w-full h-full shadow-xl text-neutral-700 rounded-xl p-4">주차장 유형</div>
+                        <div className='w-flex-1 h-full flex flex-col'>
+                            <div className='w-full h-[30%] grid grid-cols-3 gap-4 mb-4 text-white'>
+                                <div className="w-full h-full shadow-xl bg-gray-100 text-lg text-neutral-700 rounded-xl p-4">주차장 구분</div>
+                                <div className="w-full h-full shadow-xl bg-gray-100 text-lg text-neutral-700 rounded-xl p-4">주차장 요금</div>
+                                <div className="w-full h-full shadow-xl bg-gray-100 text-lg text-neutral-700 rounded-xl p-4">주차장 유형</div>
                             </div>
-                            <div className='w-full flex-1 p-4 shadow-xl text-neutral-700 rounded-xl'>
+                            <div className='w-full flex-1 p-4 shadow-xl bg-gray-100 text-neutral-700 text-lg rounded-xl'>
                                 지역별 분포 지도
                             </div>
                         </div>
