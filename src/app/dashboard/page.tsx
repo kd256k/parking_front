@@ -146,7 +146,7 @@ export default function Page() {
                 {/* data 있음. 차트 구현 */}
                 <div className='w-full h-full flex flex-col'>
                     <div className='h-[25%] px-2 mx-8 grid grid-cols-4 gap-4'>
-                        <ContainerCard />s
+                        <ContainerCard />
                         <ContainerCard />
                         <ContainerCard />
                         <ContainerCard />
