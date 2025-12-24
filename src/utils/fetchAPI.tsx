@@ -81,6 +81,7 @@ export const fetchAPI = async (url: string, options: RequestInit = {}) => {
 
   // 최종 실패 시 로그아웃 처리 (CSR만)
   if (!isServer) {
+        debugger;
     window.location.href = '/login';
   }
 
