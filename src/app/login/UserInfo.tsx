@@ -13,7 +13,8 @@ export default function UserInfo() {
 
     const logout = async () => {
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`, {
-            method: 'POST'
+            method: 'POST',
+            credentials: 'include'
         });
 
         if(res.ok) {
@@ -21,7 +22,7 @@ export default function UserInfo() {
             //debugger;
 
             setLoginUser(null);
-            sessionStorage.removeItem('jwtToken');
+            //sessionStorage.removeItem('jwtToken');
             //router.refresh();
         }
     };

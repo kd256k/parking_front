@@ -37,18 +37,14 @@ export default function LoginPage() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(credentials),
+                credentials: 'include'
             });
             if (response.ok) {
-                const jwtToken = response.headers.get("Authorization");
-                if (jwtToken) {
-                    sessionStorage.setItem("jwtToken", jwtToken);
-
-                    const loginUserInfo : User = await response.json();
-                    setLoginUser(loginUserInfo);
-                    
-                    router.push('/');
-                    return;
-                }
+                const loginUserInfo : User = await response.json();
+                setLoginUser(loginUserInfo);
+                
+                router.push('/');
+                return;
             }
                 
             alert("로그인 실패!");
