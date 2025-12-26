@@ -127,7 +127,7 @@ export default function Page() {
 
     series: [{
       name: 'Inflation',
-      data: [2.3, 3.1, 4.0, 5.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2,2.3, 3.1, 4.0, 5.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2,2.3, 3.1, 4.0, 5.1, 4.0, 3.6, 3.2]
+      data: [2.3, 3.1, 4.0, 5.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2, 2.3, 3.1, 4.0, 5.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2, 2.3, 3.1, 4.0, 5.1, 4.0, 3.6, 3.2]
     }],
     options: {
       chart: {
@@ -144,7 +144,7 @@ export default function Page() {
       },
       dataLabels: {
         enabled: true,
-        formatter: function (val:any) {
+        formatter: function (val: any) {
           return val + "%";
         },
         offsetY: -20,
@@ -155,7 +155,7 @@ export default function Page() {
       },
 
       xaxis: {
-        categories: ["가평군","고양시","과천시","광명시","광주시","구리시","군포시","김포시","남양주시","동두천시","부천시","성남시","수원시","시흥시","안산시","안성시","안양시","양주시","양평군","여주시","연천군","오산시","용인시","의왕시","의정부시","이천시","파주시","평택시","포천시","하남시","화성시"],
+        categories: ["가평군", "고양시", "과천시", "광명시", "광주시", "구리시", "군포시", "김포시", "남양주시", "동두천시", "부천시", "성남시", "수원시", "시흥시", "안산시", "안성시", "안양시", "양주시", "양평군", "여주시", "연천군", "오산시", "용인시", "의왕시", "의정부시", "이천시", "파주시", "평택시", "포천시", "하남시", "화성시"],
         position: 'bottom',
         axisBorder: {
           show: false
@@ -188,7 +188,7 @@ export default function Page() {
         },
         labels: {
           show: false,
-          formatter: function (val:any) {
+          formatter: function (val: any) {
             return val + "%";
           }
         }
@@ -213,7 +213,7 @@ export default function Page() {
 
   //bg-amber- test
   return (
-    <div className="w-full h-screen p-4 md:pt-10 bg-gray-200">
+    <div className="w-full h-full p-4 md:pt-10 bg-gray-200">
       {/* <SimpleSouthKoreaMapChart
             setColorByCount={setColorByCount}
             data={data}
@@ -228,31 +228,39 @@ export default function Page() {
   height={350}
 /> */}
       {data ?
-        <div className="w-full h-screen pt-6">
+        <div className="w-full h-full pt-6">
           {/* data 있음. 차트 구현 */}
-          <div className='w-full h-full flex flex-col'>
-            <div className='h-[25%] px-2 mx-8 grid grid-cols-4 gap-4'>
+          <div className='w-full h-full grid grid-rows-4'>
+            <div className='row-span-1 px-2 mx-8 grid grid-cols-4 gap-4'>
               <ContainerCard />
               <ContainerCard />
               <ContainerCard />
               <ContainerCard />
             </div>
-            <div className='h-[75%] px-2 mx-8 py-8 grid grid-cols-2 gap-4'>
-              <div className='w-full h-full grid grid-rows-2 gap-4'>
-                <div className="h-full p-4 shadow-xl bg-gray-100 rounded-xl">
+            <div className='row-span-3 px-2 py-8 mx-8 grid grid-cols-4 gap-4'>
+              <div className='col-span-1 h-full flex flex-col'>
+                <div className='w-full flex-1 p-4 shadow-xl bg-gray-100 text-neutral-700 text-lg rounded-xl'>
+                  지역별 분포 지도
+                  <div className="w-80">
+                    <SimpleSouthKoreaMapChart
+                      setColorByCount={setColorByCount}
+                      data={map_sample_data}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className='col-span-1 flex-1 grid grid-row-2 gap-5'>
+                <Top5Card />
+                <Top5Card />
+              </div>
+              <div className='col-span-2 h-full grid grid-rows-2 gap-4'>
+                <div className="w-full h-full p-4 shadow-xl bg-gray-100 rounded-xl">
                   <p className=" text-neutral-700 text-lg">
                     지역별 주차장 수
                   </p>
                   <ReactApexChart options={barState.options as ApexOptions} series={barState.series} type="bar" height={350} />
                 </div>
-                <div className='flex-1 grid grid-cols-2 gap-5'>
-                  <Top5Card />
-                  <Top5Card />
-                </div>
-              </div>
-
-              <div className='w-flex-1 h-full flex flex-col'>
-                <div className='w-full h-[30%] grid grid-cols-3 gap-4 mb-4 text-white'>
+                <div className='w-full h-full grid grid-cols-3 gap-4 mb-4 text-white'>
                   <div className="w-full h-full shadow-xl bg-gray-100 text-lg text-neutral-700 rounded-xl p-4">주차장 구분
                     <ReactApexChart
                       options={options}
@@ -278,27 +286,12 @@ export default function Page() {
                     />
                   </div>
                 </div>
-                <div className='w-full flex-1 p-4 shadow-xl bg-gray-100 text-neutral-700 text-lg rounded-xl'>
-                  지역별 분포 지도
-                  <div className="w-80">
-                  <SimpleSouthKoreaMapChart
-                    setColorByCount={setColorByCount}
-                    data={map_sample_data}
-                  />
-                  </div>
-                </div>
               </div>
             </div>
           </div>
           <div>
-
           </div>
-
-
         </div>
-
-
-
 
 
 
