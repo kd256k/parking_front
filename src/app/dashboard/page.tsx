@@ -19,7 +19,7 @@ const ReactApexChart = dynamic(
 /***********************************************
  * 지도용 샘플데이터
  ***********************************************/
-const data = [
+const map_sample_data = [
     { locale: "부산광역시", count: 1500 },
     { locale: "대구광역시", count: 3000 },
     { locale: "대전광역시", count: 400 },
