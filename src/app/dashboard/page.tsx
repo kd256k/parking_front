@@ -19,7 +19,7 @@ const ReactApexChart = dynamic(
 /***********************************************
  * 지도용 샘플데이터
  ***********************************************/
-const data = [
+const map_sample_data = [
     { locale: "부산광역시", count: 1500 },
     { locale: "대구광역시", count: 3000 },
     { locale: "대전광역시", count: 400 },
@@ -170,6 +170,10 @@ export default function Page() {
                             </div>
                             <div className='w-full flex-1 p-4 shadow-xl bg-gray-100 text-neutral-700 text-lg rounded-xl'>
                                 지역별 분포 지도
+                                <SimpleSouthKoreaMapChart
+                                    setColorByCount={setColorByCount}
+                                    data={map_sample_data}
+                                />
                             </div>
                         </div>
                     </div>
