@@ -213,7 +213,7 @@ export default function Page() {
 
   //bg-amber- test
   return (
-    <div className="w-full h-full p-4 md:pt-10 bg-gray-200">
+    <div className="w-screen h-screen overflow-hidden p-4 md:py-10 bg-gray-200">
       {/* <SimpleSouthKoreaMapChart
             setColorByCount={setColorByCount}
             data={data}
@@ -228,7 +228,7 @@ export default function Page() {
   height={350}
 /> */}
       {data ?
-        <div className="w-full h-full pt-6">
+        <div className="w-full h-full py-6">
           {/* data 있음. 차트 구현 */}
           <div className='w-full h-full grid grid-rows-4'>
             <div className='row-span-1 px-2 mx-8 grid grid-cols-4 gap-4'>
