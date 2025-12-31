@@ -1,9 +1,15 @@
+interface ContainerCardProps {
+ item: Number
+ caption: String
+}
 
-export default function Page() {
+export default function ContainerCard({item, caption} : ContainerCardProps) {
+
   return (
-    <div className="w-full h-full p-4 shadow-xl bg-gray-50 text-lg text-neutral-700 rounded-2xl 
+    <div className="w-full h-35 p-4 shadow-xl bg-gray-50 text-lg rounded-2xl 
                     items-center justify-center">
-      지표별 수치 카드
+                      <div className="text-neutral-700 font-bold">{caption}</div>
+                      <div className="text-neutral-700 font-bold">{String(item)}</div>
     </div>
   );
 }

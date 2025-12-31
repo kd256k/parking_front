@@ -10,12 +10,12 @@ import { ParkingDashboardResponse } from "@/types/dashboard";
 import ContainerCard from "@/components/ContainerCard";
 import Top5Card from "@/components/Top5Card";
 import TailSelect from "@/components/TailSelect";
-import SouthKoreaMapChart from "@/components/SouthKoreaMapChart";
 
 const ReactApexChart = dynamic(
   () => import("react-apexcharts"),
   { ssr: false }
 );
+
 
 /***********************************************
  * 지도용 샘플데이터
@@ -40,45 +40,23 @@ const map_sample_data = [
   { locale: "서울특별시", count: 10000 },
 ];
 export default function Page() {
-   
-  const regionSelectRef = useRef<HTMLSelectElement | null>(null);
 
+  const selectRef = useRef<HTMLSelectElement>(null);
+
+  const [selectRegion, setSelectRegion] = useState("");
 
   const [data, setData] = useState<ParkingDashboardResponse | null>();
-  const [regionList, setRegionList] = useState<string[]>([]);
-  const [selectedRegion, setSelectedRegion] = useState<string>("전국");
-
-  useEffect(() => {
-    fetchData();
-  },[selectedRegion]);
-
-
-  //
-
-  const fetchRegionList = async () => {
-
-    const res = await fetchAPI(`/parking/region`);
-
-    if (!res.ok) {
-      console.error("data fetch Err");
-      alert("data fetch Err");
-      return;
-    }
-
-    const data = await res.json();
-
-    setRegionList(['전국',...data]);
-    //console.log(data);
-  }
 
   const fetchData = async () => {
-    const res = await fetchAPI(`/parking/dashboard${selectedRegion === '전국' ? '' : '?region=' + selectedRegion}`);
+    const res = await fetchAPI('/parking/dashboard');
 
     if (!res.ok) {
       console.error("data fetch Err");
       alert("data fetch Err");
       return;
     }
+
+
 
     const data = await res.json();
 
@@ -87,14 +65,13 @@ export default function Page() {
   }
 
   useEffect(() => {
-    fetchRegionList();
-    //fetchData();
+    fetchData();
 
   }, [])
 
-  /*
-  const fetchData = async () => {
-      const res = await fetchAPI('/parking/dashboard');
+  
+  const fetchRegion = async () => {
+      const res = await fetchAPI('/parking/region');
 
       if (!res.ok) {
           console.error("data fetch Err");
@@ -112,7 +89,7 @@ export default function Page() {
   }
 
   const data = await fetchData();
-*/
+
 
   /***********************************************
    * 지도용 함수
@@ -241,7 +218,7 @@ export default function Page() {
 
   //bg-amber- test
   return (
-    <div className="w-full h-screen overflow-hidden p-4 md:pt-10 bg-gray-200">
+    <div className="w-full h-full p-4 md:pt-10 bg-gray-200">
       {/* <SimpleSouthKoreaMapChart
             setColorByCount={setColorByCount}
             data={data}
@@ -260,28 +237,25 @@ export default function Page() {
           {/* data 있음. 차트 구현 */}
           <div className='w-full h-full grid grid-rows-4'>
             <div className='row-span-1 px-2 mx-8 grid grid-cols-4 gap-4'>
-              <ContainerCard caption="전체" item={data.totalParkingCount}/>
-              <ContainerCard caption="총 주차구획수" item={data.totalParkingSpaces} />
-              <ContainerCard caption="평균 주차구획수"  item={data.averageParkingSpaces}/>
-              <ContainerCard caption="대형 주차장 비율" item={data.largeParkingLotPercentage}/>
+              <ContainerCard caption={"전체"} item={data.totalParkingCount}/>
+              <ContainerCard caption={"총 주차구획수"} item={data.totalParkingSpaces}/>
+              <ContainerCard caption={"평균 주차구획수"} item={data.averageParkingSpaces}/>
+              <ContainerCard caption={"대형주차장 비율"} item={data.largeParkingLotPercentage}/>
             </div>
             <div className='row-span-3 px-2 py-8 mx-8 grid grid-cols-4 gap-4'>
               <div className='col-span-1 h-full flex flex-col'>
                 <div className='w-full flex-1 p-4 shadow-xl bg-gray-100 text-neutral-700 text-lg rounded-xl'>
                   지역별 분포 지도
-                  <TailSelect ref={regionSelectRef} opk={regionList} opv={regionList} value={selectedRegion} setValue={setSelectedRegion}/>
+                  <TailSelect ref={selectRef} opk={} opv={} onHandle={() => {}}/>
                   <div className="w-80">
-                    <SouthKoreaMapChart
+                    <SimpleSouthKoreaMapChart
                       setColorByCount={setColorByCount}
                       data={map_sample_data}
-                      selectedRegion={selectedRegion}
-                      setSelectedRegion={setSelectedRegion}
                     />
-
                   </div>
                 </div>
               </div>
-              <div className='col-span-1 h-90 grid grid-row-2 gap-5'>
+              <div className='col-span-1 flex-1 grid grid-row-2 gap-5'>
                 <Top5Card />
                 <Top5Card />
               </div>
@@ -293,28 +267,28 @@ export default function Page() {
                   <ReactApexChart options={barState.options as ApexOptions} series={barState.series} type="bar" height={350} />
                 </div>
                 <div className='w-full h-full grid grid-cols-3 gap-4 mb-4 text-white'>
-                  <div className="w-full h-35 shadow-xl bg-gray-100 text-lg text-neutral-700 rounded-xl p-4">주차장 구분
+                  <div className="w-full h-full shadow-xl bg-gray-100 text-lg text-neutral-700 rounded-xl p-4">주차장 구분
                     <ReactApexChart
                       options={options}
                       series={series}
                       type="pie"   // 또는 bar
-                      height={100}
+                      height={350}
                     />
                   </div>
-                  <div className="w-full h-35 shadow-xl bg-gray-100 text-lg text-neutral-700 rounded-xl p-4">주차장 요금
+                  <div className="w-full h-full shadow-xl bg-gray-100 text-lg text-neutral-700 rounded-xl p-4">주차장 요금
                     <ReactApexChart
                       options={options}
                       series={series}
                       type="pie"   // 또는 bar
-                      height={100}
+                      height={350}
                     />
                   </div>
-                  <div className="w-full h-35 shadow-xl bg-gray-100 text-lg text-neutral-700 rounded-xl p-4">주차장 유형
+                  <div className="w-full h-full shadow-xl bg-gray-100 text-lg text-neutral-700 rounded-xl p-4">주차장 유형
                     <ReactApexChart
                       options={options}
                       series={series}
                       type="pie"   // 또는 bar
-                      height={100}
+                      height={350}
                     />
                   </div>
                 </div>

@@ -11,7 +11,10 @@ export interface ParkingDashboardResponse {
   averageParkingSpaces: number;      // 평균 주차 면 수
   largeParkingLotPercentage: number; // 대형 주차장 비율 (%)
 
-  // 지역별 주차장 수
+  // 전국 기준 지역별 주차장 수
+  countAllByRegion: ChartDataItem[];
+
+  // 행정구역 기준 지역별 주차장 수
   countByRegion: ChartDataItem[];
 
   // 구분별 (공영/민영) 주차장 수
