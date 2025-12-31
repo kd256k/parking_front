@@ -9,11 +9,14 @@ import { useAtom } from "jotai";
 import { User } from "@/types/user";
 import { loginUserAtom } from "@/atoms/atom";
 import { useRouter } from 'next/navigation';
+import { useIsModal } from "@/contexts/ModalContext";
 
 export default function LoginPage() {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     const router = useRouter();
+
+    const isModal = useIsModal();
 
     const [loginUser, setLoginUser] = useAtom<User | null>(loginUserAtom);
     
@@ -43,7 +46,11 @@ export default function LoginPage() {
                 const loginUserInfo : User = await response.json();
                 setLoginUser(loginUserInfo);
                 
-                router.push('/');
+                if(isModal) {
+                    router.back();
+                } else {
+                    router.push('/');
+                }
                 return;
             }
                 

@@ -152,3 +152,33 @@ export interface Parking {
      */
     lastModified: string | null;
 }
+
+
+
+export interface ParkingCluster {
+    /** 주차장 ID */
+    parkingId: string;
+
+    /** 경도 */
+    longitude: number;
+
+    /** 위도 */
+    latitude: number;
+
+    /** 주차장수 */
+    count: number | null;
+}
+
+export interface ParkingGroup {
+    /** 경도 */
+    longitude: number;
+
+    /** 위도 */
+    latitude: number;
+
+    /** 주차장수 */
+    count: number | null;
+
+    /** 주차장 목록 */
+    parkingList: Parking[];
+}

@@ -6,25 +6,26 @@ import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
+export async function Logout(setLoginUser?: React.Dispatch<React.SetStateAction<User | null>>) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include'
+    });
+
+    if(setLoginUser) {
+        setLoginUser(null);
+    }
+    
+    return res.ok;
+}
+
 export default function UserInfo() {
     const router = useRouter();
 
     const [loginUser, setLoginUser] = useAtom<User | null>(loginUserAtom);
 
     const logout = async () => {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`, {
-            method: 'POST',
-            credentials: 'include'
-        });
-
-        if(res.ok) {
-            //const json = await res.json();
-            //debugger;
-
-            setLoginUser(null);
-            //sessionStorage.removeItem('jwtToken');
-            //router.refresh();
-        }
+        await Logout(setLoginUser);
     };
 
     return (
