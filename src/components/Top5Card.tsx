@@ -16,7 +16,7 @@ export default function Top5Card({items, caption, regionName}:Top5CardProps) {
                       <div className="text-neutral-700 font-bold">{
                         items?.map(item=><div key={regionName + '_' + item.locale}>
                            <div>{item.locale}</div>
-                          <div>{item.count}</div>
+                          <div>{Number(item.count.toFixed(0)).toLocaleString()}</div>
                                           </div>) 
       
                       }</div>

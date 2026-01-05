@@ -91,6 +91,7 @@ export default function Page() {
    * 지도용 함수
    ***********************************************/
   const setColorByCount = (count: number) => {
+
     if (count === 0) return "#F1F1F1";
     if (count > 5000) return "#79D3C4";
     if (count > 3000) return "#43cdb6";
