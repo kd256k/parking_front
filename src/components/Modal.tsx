@@ -1,35 +1,43 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { IoCloseOutline } from "react-icons/io5";
 import { ModalProvider } from "@/contexts/ModalContext";
+import { useModalRouter } from "@/hooks/useModalRouter";
 
 export default function Modal({
     children,
     closeable = true,
-    showHideButton = false
+    showHideButton = false,
+    containerClassName = "min-w-120 max-w-[80%]" 
 }: {
     children: React.ReactNode;
     closeable?: boolean;
     showHideButton?: boolean;
+    containerClassName?: string;
 }) {
-    const router = useRouter();
+
+    const { push, close, currentDepth } = useModalRouter();
+
+    const closeModal = () => {
+        close();
+    }
 
     return (
         <ModalProvider>
             <div
-                className="fixed flex-col inset-0 bg-black/50 z-50 flex items-center justify-center"
-                onClick={() => closeable && router.back()} // 배경 클릭 시 닫기
+                className="fixed inset-0 z-50  bg-black/50 flex items-center justify-center"
+                onClick={() => closeable && closeModal()} // 배경 클릭 시 닫기
             >
-                <div className="min-w-120 max-w-[90%]">
+                <div className={containerClassName}>
                     {
                         showHideButton &&
-                        <div onClick={() => router.back()} className="flex justify-end cursor-pointer -mr-8 text-4xl text-white">
+                        <div onClick={() => closeModal()} className="flex justify-end cursor-pointer -mr-8 text-4xl text-white">
                             <IoCloseOutline />
                         </div>
                     }
                     <div
-                        className="bg-white p-6 rounded-lg w-full"
+                        className="p-6 w-full"
                         onClick={(e) => e.stopPropagation()} // 내부 클릭 시 닫기 방지
                     >
                         {children}

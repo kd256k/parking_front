@@ -1,5 +1,7 @@
+import TailSelect from '@/components/TailSelect';
+import { feeInfoList, parkingCategoryList, parkingTypeList } from '@/constants/parking';
 import { Parking } from '@/types/parking';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
@@ -10,7 +12,10 @@ export default function DesktopPanel({
     setSelectedParking,
     mainOpen,
     setMainOpen,
-    reloadList
+    reloadList,
+    parkingCategory, setParkingCategory,
+    parkingType, setParkingType,
+    feeInfo, setFeeInfo,
 }: {
     parkingLots: Parking[];
     selectedParking: Parking | null;
@@ -18,7 +23,22 @@ export default function DesktopPanel({
     mainOpen: boolean;
     setMainOpen: React.Dispatch<React.SetStateAction<boolean>>;
     reloadList: (append: boolean) => void;
+    parkingCategory: string;
+    setParkingCategory: React.Dispatch<React.SetStateAction<string>>;
+    parkingType: string;
+    setParkingType: React.Dispatch<React.SetStateAction<string>>;
+    feeInfo: string;
+    setFeeInfo: React.Dispatch<React.SetStateAction<string>>;
 }) {
+
+    const parkingCategoryRef = React.useRef<HTMLSelectElement | null>(null);
+    const parkingTypeRef = React.useRef<HTMLSelectElement | null>(null);
+    const feeInfoRef = React.useRef<HTMLSelectElement | null>(null);
+
+    const prependAllToList = (allStr: string, list: string[]) => {
+        return [allStr, ...list];
+    }
+
     return (
         <>
             {/* 컨테이너: 메인+상세 패널을 감싸서 한 번에 움직임 */}
@@ -36,16 +56,40 @@ export default function DesktopPanel({
                             <h1 className="font-bold text-lg">주차장 목록</h1>
                             <div>
                                 <button
-                                onClick={() => reloadList(false)}
-                                className="bg-blue-700 hover:bg-blue-800 px-3 py-1 rounded text-sm transition-colors"
+                                    onClick={() => reloadList(false)}
+                                    className="bg-blue-700 hover:bg-blue-800 px-3 py-1 rounded text-sm transition-colors"
                                 >
                                     갱신
                                 </button>
                             </div>
                         </div>
 
+                        <div className="grid grid-cols-3 gap-2 p-4 border-b border-gray-300">
+                            <TailSelect ref={parkingCategoryRef}
+                                opk={prependAllToList('', parkingCategoryList)}
+                                opv={prependAllToList(':: 전체 ::', parkingCategoryList)}
+                                title="주차장구분"
+                                value={parkingCategory}
+                                setValue={setParkingCategory} />
+
+                            <TailSelect ref={parkingTypeRef}
+                                opk={prependAllToList('', parkingTypeList)}
+                                opv={prependAllToList(':: 전체 ::', parkingTypeList)}
+                                title="주차장유형"
+                                value={parkingType}
+                                setValue={setParkingType} />
+
+                            <TailSelect ref={feeInfoRef}
+                                opk={prependAllToList('', feeInfoList)}
+                                opv={prependAllToList(':: 전체 ::', feeInfoList)}
+                                title="요금정보"
+                                value={feeInfo}
+                                setValue={setFeeInfo} />
+                        </div>
+
                         <div className="flex-1 overflow-y-auto">
-                            {parkingLots.map((p) => (
+                            {
+                            parkingLots.length > 0 ? parkingLots.map((p) => (
                                 <button
                                     key={p.parkingId}
                                     onClick={() => setSelectedParking(p)}
@@ -56,19 +100,21 @@ export default function DesktopPanel({
                                     <div className="text-sm text-gray-500 mt-1">{p.parkingCategory} / {p.parkingType} / {p.feeInfo}</div>
                                     <div className="text-sm text-gray-500 mt-1">{p.addressRoad || p.addressJibun}</div>
                                 </button>
-                            ))}
+                            ))
+                                :
+                            <div className="font-bold text-center  mt-2 p-5 rounded">조회된 항목이 없습니다.</div>
+                            }
                         </div>
                     </div>
 
                     {/* [우측] 상세 정보 패널 (메인 패널 옆에 붙음) */}
-                    <div
+                    {/* <div
                         className={`
                                 h-full bg-white shadow-xl flex flex-col pointer-events-auto border-l z-20
                                 transition-all duration-300 ease-in-out overflow-hidden
-                                ${selectedParking ? 'w-72 opacity-100' : 'w-0 opacity-0'} /* 너비 조절로 여닫기 */
+                                ${selectedParking ? 'w-72 opacity-100' : 'w-0 opacity-0'}
                             `}
                     >
-                        {/* 내부 컨텐츠 너비(w-72) 고정: 패널이 줄어들 때 내용이 찌그러지지 않게 함 */}
                         <div className="w-72 flex flex-col h-full">
                             <div className="p-4 border-b bg-gray-50 flex justify-between items-center shrink-0">
                                 <h2 className="font-bold text-gray-700">상세 정보</h2>
@@ -93,7 +139,7 @@ export default function DesktopPanel({
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* 데스크탑: 패널 열기 버튼 */}
@@ -101,7 +147,7 @@ export default function DesktopPanel({
                     className={`
                         hidden h-full md:flex absolute
                             transition-all duration-300 items-center gap-2
-                        ${mainOpen ? selectedParking ? 'left-152' : 'left-80' : 'left-0'}
+                        ${mainOpen ? selectedParking ? 'left-80' : 'left-80' : 'left-0'}
                     `}
                 >
                     <button className="font-bold text-sm bg-white py-5 px-1 rounded-r-md shadow-lg text-gray-700 hover:bg-gray-50 pointer-events-auto" onClick={() => setMainOpen(!mainOpen)}>

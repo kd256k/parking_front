@@ -46,7 +46,8 @@ export default function Menu() {
                             <Link href="/login" className="text-lg hover:bg-gray-50 px-3 py-2 cursor-pointer">로그인</Link>
                         }
                         
-                        <Link href="/dashboard" className="text-lg hover:bg-gray-50 px-3 py-2 cursor-pointer">대시보드</Link>
+                        <Link href="/board" className="text-lg hover:bg-gray-50 px-3 py-2 cursor-pointer">목록</Link>
+                        <Link href="/dashboard" className="text-lg hover:bg-gray-50 px-3 py-2 cursor-pointer">통계</Link>
                         <Link href="/about" className="text-lg hover:bg-gray-50 px-3 py-2 cursor-pointer">프로그램에 대해</Link>
                     </div>
                     <div className={`absolute w-screen h-screen left-0 top-0 z-40

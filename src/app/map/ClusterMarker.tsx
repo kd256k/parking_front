@@ -4,6 +4,7 @@ import { MapMarker, CustomOverlayMap, useMap } from "react-kakao-maps-sdk";
 interface ClusterProps {
     data: Parking | ParkingCluster | ParkingGroup;
     onClickMarker: (data: Parking | ParkingGroup) => void;
+    onClusterclick: (data: ParkingCluster) => void;
 }
 
 const clusterSettings = [
@@ -13,7 +14,7 @@ const clusterSettings = [
     { limit: Infinity, size: 70, color: 'rgba(255, 0, 0, 0.8)', fontSize: '22px', outline: '8px solid rgba(255,0,0,0.3)' } // 그 이상 (빨간색)
 ];
 
-export default function ClusterMarker({ data, onClickMarker }: ClusterProps) {
+export default function ClusterMarker({ data, onClickMarker, onClusterclick }: ClusterProps) {
     const map = useMap(); // 현재 지도 객체 가져오기
 
     // 1. 단일 마커일 경우 (일반 마커 렌더링)
@@ -73,12 +74,7 @@ export default function ClusterMarker({ data, onClickMarker }: ClusterProps) {
             clickable={true}
         >
             <div
-                onClick={() => {
-                    map.setCenter(new kakao.maps.LatLng(cluster.latitude, cluster.longitude));
-
-                    const currentLevel = map.getLevel();
-                    map.setLevel(currentLevel - 2, { animate: true });
-                }}
+                onClick={()=>onClusterclick(cluster)}
                 style={{
                     width: `${style!.size}px`,
                     height: `${style!.size}px`,

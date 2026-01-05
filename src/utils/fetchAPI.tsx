@@ -23,7 +23,7 @@ const fetchSub = async (url: string, options: RequestInit = {}) => {
   // [CSR] 브라우저가 자동으로 쿠키 전송 (credentials: 'include' 불필요 - Same Origin)
   const response = await fetch(`${BACKEND_URL}${url}`, {
     ...options,
-    headers,
+    headers : {'Content-Type': 'application/json', ...headers},
     credentials: 'include'
   });
 
@@ -69,6 +69,7 @@ export const fetchAPI = async (url: string, options: RequestInit = {}) => {
         } else {
           // 갱신 실패 (리프레시 토큰도 만료됨)
           // throw new Error('Session expired'); // 혹은 아래처럼 리다이렉트
+          window.location.href = '/login';
           break; // 루프 탈출 -> 로그인 페이지로
         }
       }
@@ -77,12 +78,6 @@ export const fetchAPI = async (url: string, options: RequestInit = {}) => {
     }
   } catch (e) {
     console.error(e);
-  }
-
-  // 최종 실패 시 로그아웃 처리 (CSR만)
-  if (!isServer) {
-        debugger;
-    window.location.href = '/login';
   }
 
   return { ok: false } as Response; // 더미 응답

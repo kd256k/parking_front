@@ -45,7 +45,7 @@ export default function MobilePanel({
             </div>
 
             {/* 모바일: 상세 (바텀 시트) - selected 있을 때만 보임 */}
-            <div
+            {/* <div
                 className={`
                         md:hidden 
                         absolute left-0 bottom-0 w-full h-[45vh] bg-white shadow-[0_-5px_20px_rgba(0,0,0,0.1)] z-40 rounded-t-2xl flex flex-col
@@ -70,7 +70,7 @@ export default function MobilePanel({
                         </button>
                     </div>
                 )}
-            </div>
+            </div> */}
         </>
     );
 }

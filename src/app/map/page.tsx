@@ -15,6 +15,7 @@ import DesktopPanel from './DesktopPanel';
 import MobilePanel from './MobilePanel';
 import ClusterMarker from './ClusterMarker';
 import MyLocationMarker from './MyLocationMarker';
+import { useModalRouter } from '@/hooks/useModalRouter';
 
 const KAKAO_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_APP_KEY}&autoload=false`;//&libraries=services,clusterer`;
 
@@ -41,6 +42,13 @@ export default function Page() {
     const [parkingClusters, setParkingClusters] = useState<ParkingCluster[]>([]);
     const [parkingGroups, setParkingGroups] = useState<ParkingGroup[]>([]);
 
+    // 필터
+    const [parkingCategory, setParkingCategory] = useState<string>('');
+    const [parkingType, setParkingType] = useState<string>('');
+    const [feeInfo, setFeeInfo] = useState<string>('');
+
+    const { push, close, currentDepth } = useModalRouter();
+
     // 지도 Relayout (패널 열림/닫힘 시 지도 깨짐 방지)
     useEffect(() => {
         if (!mapObj) return;
@@ -52,9 +60,19 @@ export default function Page() {
         return () => clearTimeout(t);
     }, [mapObj, mainOpen, selectedParking]);
 
+    useEffect(() => {
+        if (!mapObj) return;
 
+        reloadList();
+    }, [mapObj, parkingCategory, parkingType, feeInfo])
 
-    const reloadList = async (append = true) => {
+    useEffect(()=>{
+        if(selectedParking != null) {
+            push(`/board/${selectedParking.parkingId}`, 1);
+        }
+    }, [selectedParking]);
+
+    const reloadList = async () => {
         if (!mapObj) return;
 
         //var center = mapObj.getCenter();
@@ -77,15 +95,19 @@ export default function Page() {
         const ne = mapBounds.getNorthEast();
 
         // 4. 상태 업데이트 및 콘솔 확인
-        const newBounds = {
+        const cond = {
             minLatitude: String(sw.getLat()),
             minLongitude: String(sw.getLng()),
             maxLatitude: String(ne.getLat()),
             maxLongitude: String(ne.getLng()),
-            kakaoZoomLevel: String(mapObj.getLevel())
+            kakaoZoomLevel: String(mapObj.getLevel()),
+
+            category: parkingCategory,
+            type: parkingType,
+            feeInfo: feeInfo,
         };
 
-        const queryString = new URLSearchParams(newBounds).toString();
+        const queryString = new URLSearchParams(cond).toString();
         const res = await fetchAPI(`/parking/fromBounds?${queryString}`);
 
 
@@ -109,29 +131,18 @@ export default function Page() {
         setParkingGroups(parkingGroups);
     };
 
-
-    const onClusterclick = (_target: any, cluster: any) => {
-        const map = mapObj!;
-        // 현재 지도 레벨에서 1레벨 확대한 레벨
-        const level = map.getLevel() - 1;
-
-        // 지도를 클릭된 클러스터의 마커의 위치를 기준으로 확대합니다
-        map.setLevel(level, { anchor: cluster.getCenter() });
-    };
-
-
     const onMapDragEnd = (map: kakao.maps.Map) => {
         const center = map.getCenter();
         setCenter({ lat: center.getLat(), lng: center.getLng() });
 
-        reloadList(false);
+        reloadList();
     }
 
     const onMapZoomChanged = (map: kakao.maps.Map) => {
         const level = map.getLevel();
         setLevel(level);
 
-        reloadList(false);
+        reloadList();
     }
 
     return (
@@ -175,6 +186,13 @@ export default function Page() {
                                             setMainOpen(true);
                                         }
                                     }}
+                                    onClusterclick={(cluster) => {
+                                        const map = mapObj!;
+                                        map.setCenter(new kakao.maps.LatLng(cluster.latitude, cluster.longitude));
+
+                                        const currentLevel = map.getLevel();
+                                        map.setLevel(currentLevel - 2, { animate: true });
+                                    }}
                                 />
                             ))}
 
@@ -187,12 +205,14 @@ export default function Page() {
                                 yAnchor={1}
                             >
                                 {/* 커스텀 디자인 영역 */}
+                                <div className="absolute top-0 left-0 w-480 h-270 bg-red-500/50" onClick={(e) => { e.preventDefault(); setSelectedParkingGroup(null) }}>
+                                </div>
                                 <div className="bg-white p-2 rounded shadow-lg border border-gray-300 relative">
                                     {
                                         selectedParkingGroup.parkingList.map((p, idx) =>
                                             <div key={`${p.parkingId}-${idx}`}
                                                 className='p-2 hover:bg-gray-200 cursor-pointer'
-                                                onClick={()=>{
+                                                onClick={() => {
                                                     setSelectedParking(p);
                                                     setSelectedParkingGroup(null);
                                                     setMainOpen(true);
@@ -203,12 +223,12 @@ export default function Page() {
                                     }
 
                                     {/* 닫기 버튼 */}
-                                    <button
+                                    {/* <button
                                         onClick={() => setSelectedParkingGroup(null)}
                                         className="absolute top-1 right-1 text-gray-400 hover:text-gray-600"
                                     >
                                         X
-                                    </button>
+                                    </button> */}
                                 </div>
                             </CustomOverlayMap>}
                         </Map>
@@ -228,7 +248,14 @@ export default function Page() {
                     setSelectedParking={setSelectedParking}
                     mainOpen={mainOpen}
                     setMainOpen={setMainOpen}
-                    reloadList={reloadList} />
+                    reloadList={reloadList}
+                    parkingCategory={parkingCategory}
+                    setParkingCategory={setParkingCategory}
+                    parkingType={parkingType}
+                    setParkingType={setParkingType}
+                    feeInfo={feeInfo}
+                    setFeeInfo={setFeeInfo}                    
+                    />
 
 
                 {/* ======================= */}
