@@ -108,20 +108,20 @@ export default function Page() {
 
   //bg-amber- test
   return (
-    <div className="w-full h-screen overflow-hidden p-4 md:pt-10 bg-gray-200">
+    <div className="w-full h-screen overflow-hidden bg-gray-200">
       {data ?
-        <div className="w-full h-full pt-6">
+        <div className="w-full h-full">
           {/* data 있음. 차트 구현 */}
-          <div className='w-full h-full grid grid-rows-4'>
+          <div className='w-full h-full pt-8  flex flex-col space-y-6'>
             <div className='px-2 mx-8 flex justify-between items-center gap-x-4'>
               <ContainerCard caption="전체 주차장 수" item={data.totalParkingCount}/>
               <ContainerCard caption="총 주차구획수" item={data.totalParkingSpaces} />
               <ContainerCard caption="평균 주차구획수"  item={data.averageParkingSpaces}/>
               <ContainerCard caption="대형 주차장 비율" item={data.largeParkingLotPercentage}/>
             </div>
-            <div className='row-span-3 px-2 py-8 mx-8 grid grid-cols-4 gap-4'>
-              <div className='col-span-1 h-full flex flex-col'>
-                <div className='w-full flex-1 p-4 shadow-xl bg-gray-100 text-neutral-700 text-lg rounded-xl'>
+            <div className='row-span-3 px-2 mx-8 grid grid-cols-3 space-x-6'>
+              <div className='w-full flex flex-col'>
+                <div className='flex-1 p-4 justify-center text-neutral-700 text-lg rounded-xl'>
                   지역별 분포 지도
                   <TailSelect ref={regionSelectRef} opk={regionList} opv={regionList} value={selectedRegion} setValue={setSelectedRegion}/>
                   <div className="w-100">
@@ -135,11 +135,11 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className='col-span-1 h-90 grid grid-row-2 gap-5'>
+              <div className='h-90 grid grid-row-2 gap-5'>
                 <Top5Card caption="주차장 수 Top5 지역" items={data.top5RegionByCount} regionName={selectedRegion}/>
                 <Top5Card caption="주차구획수 Top5 지역" items={data.top5RegionBySpaces} regionName={selectedRegion}/>
               </div>
-              <div className='col-span-2 h-full grid grid-rows-2 gap-4'>
+              <div className='h-full flex flex-col gap-4'>
                 <div className="w-full h-full p-4 shadow-xl bg-gray-100 rounded-xl">
                   <p className=" text-neutral-700 text-lg">
                     지역별 주차장 수
@@ -151,7 +151,7 @@ export default function Page() {
                     type="bar"
                     height={350} />}
                 </div>
-                <div className='w-full h-full grid grid-cols-3 gap-4 mb-4 text-white'>
+                <div className='w-full h-full grid grid-cols-3 gap-4 text-white'>
                   <div className="w-full h-35 shadow-xl bg-gray-100 text-lg text-neutral-700 rounded-xl p-4">주차장 구분
                     { countByCategoryOption&&
                      <ReactApexChart

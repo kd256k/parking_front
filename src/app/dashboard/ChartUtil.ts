@@ -68,7 +68,7 @@ export const createBarChartOption = (items: ChartDataItem[]): ChartOption => {
                 labels: {
                     show: false,
                     formatter: function (val: any) {
-                        return val + "%";
+                        return val.toLocaleString() + "%";
                     }
                 }
 
