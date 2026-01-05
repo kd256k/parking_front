@@ -1,7 +1,14 @@
+import { ApexOptions } from "apexcharts";
+
 // 공통 데이터 구조 (차트에 주로 사용되는 { label, value } 형태)
 export interface ChartDataItem {
-  label: string;
-  value: number;
+  locale: string;
+  count: number;
+}
+
+export interface PieChartDataItem {
+  labels: string[];
+  series: number[];
 }
 
 // 메인 데이터 구조
@@ -18,17 +25,22 @@ export interface ParkingDashboardResponse {
   countByRegion: ChartDataItem[];
 
   // 구분별 (공영/민영) 주차장 수
-  countByCategory: ChartDataItem[];
+  countByCategory: PieChartDataItem;
 
   // 요금 정보별 (무료/유료/혼합) 주차장 수
-  countByFeeInfo: ChartDataItem[];
+  countByFeeInfo: PieChartDataItem;
 
   // 유형별 (노상/노외/부설) 주차장 수
-  countByType: ChartDataItem[];
+  countByType: PieChartDataItem;
 
   // 주차장 수 상위 5개 지역
   top5RegionByCount: ChartDataItem[];
 
   // 주차 면 수 상위 5개 지역
   top5RegionBySpaces: ChartDataItem[];
+}
+
+export interface ChartOption {
+  series: ApexNonAxisChartSeries;
+  options: ApexOptions;
 }
