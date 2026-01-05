@@ -260,7 +260,7 @@ export default function Page() {
           {/* data 있음. 차트 구현 */}
           <div className='w-full h-full grid grid-rows-4'>
             <div className='row-span-1 px-2 mx-8 grid grid-cols-4 gap-4'>
-              <ContainerCard caption="전체" item={data.totalParkingCount}/>
+              <ContainerCard caption="전체 주차장 수" item={data.totalParkingCount}/>
               <ContainerCard caption="총 주차구획수" item={data.totalParkingSpaces} />
               <ContainerCard caption="평균 주차구획수"  item={data.averageParkingSpaces}/>
               <ContainerCard caption="대형 주차장 비율" item={data.largeParkingLotPercentage}/>
@@ -282,8 +282,8 @@ export default function Page() {
                 </div>
               </div>
               <div className='col-span-1 h-90 grid grid-row-2 gap-5'>
-                <Top5Card />
-                <Top5Card />
+                <Top5Card caption="주차장 수 Top5 지역" item={data.top5RegionByCount}/>
+                <Top5Card caption="주차구획수 Top5 지역" item={data.top5RegionBySpaces}/>
               </div>
               <div className='col-span-2 h-full grid grid-rows-2 gap-4'>
                 <div className="w-full h-full p-4 shadow-xl bg-gray-100 rounded-xl">
