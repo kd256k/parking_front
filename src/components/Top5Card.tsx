@@ -1,4 +1,4 @@
-import type {ChartDataItem} from '@/types/dashboard'
+import type { ChartDataItem } from '@/types/dashboard'
 import { JSX } from 'react';
 
 interface Top5CardProps {
@@ -7,19 +7,26 @@ interface Top5CardProps {
   regionName: string;
 }
 
-export default function Top5Card({items, caption, regionName}:Top5CardProps) {
+export default function Top5Card({ items, caption, regionName }: Top5CardProps) {
 
   return (
-    <div className="h-full p-8 shadow-xl bg-gray-50 text-lg text-neutral-700 rounded-2xl 
-                    items-center justify-center space-y-4">
-                      <div className="text-neutral-700 font-medium ">{caption}</div>
-                      <div className="flex flex-col text-neutral-700 font-light text-sm ">{
-                        items?.map(item=><div key={regionName + '_' + item.locale}>
-                           <div>{item.locale}</div>
-                          <div>{Number(item.count.toFixed(0)).toLocaleString()}</div>
-                                          </div>) 
-      
-                      }</div>
+    <div className="bg-white rounded-xl shadow-lg p-6">
+      <h3 className="text-neutral-700 text-lg mb-4">{caption}</h3>
+      <div className="space-y-3">
+        {
+          items?.map(item => <div key={regionName + '_' + item.locale}
+            className="flex justify-between items-center pb-2 border-b border-gray-200 last:border-b-0" >
+            <div className="flex items-center gap-3">
+              <span className="flex items-center justify-center w-7 h-7 rounded-full bg-teal-500 text-white text-sm">
+                {1}
+              </span>
+              <span className="text-neutral-700">{item.locale}</span>
+            </div>
+            <div className="text-neutral-900">{Number(item.count.toFixed(0)).toLocaleString()}</div>
+          </div>)
+
+        }
+      </div>
     </div>
   );
 }
