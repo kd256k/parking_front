@@ -1,31 +1,28 @@
 'use client';
 
-import Script from 'next/script';
-import { Map, CustomOverlayMap } from 'react-kakao-maps-sdk';
+import { Map, useKakaoLoader } from 'react-kakao-maps-sdk';
 import { useEffect, useState } from 'react';
 import { fetchAPI } from '@/utils/fetchAPI';
 import { Parking, ParkingCluster, ParkingGroup } from '@/types/parking';
 
-import { User } from '@/types/user';
-import { useAtom } from 'jotai';
-import { loginUserAtom } from '@/atoms/atom';
 import Menu from '@/components/Menu';
 import MyLocationButton from './MyLocationButton';
 import DesktopPanel from './DesktopPanel';
 import MobilePanel from './MobilePanel';
-import ClusterMarker from './ClusterMarker';
+import { ClusterMarker, GroupParkingMarker, SingleParkingMarker } from './CustomMarkers';
 import MyLocationMarker from './MyLocationMarker';
-import { useModalRouter } from '@/hooks/useModalRouter';
-
-const KAKAO_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_APP_KEY}&autoload=false`;//&libraries=services,clusterer`;
-
+import { useModalEvents, useModalRouter } from '@/utils/ModalUtil';
+import ParkingGroupList from './ParkingGroupList';
 
 
 export default function Page() {
-    const [loginUser, setLoginUser] = useAtom<User | null>(loginUserAtom);
 
-    const [loaded, setLoaded] = useState(false);
     const [mapObj, setMapObj] = useState<kakao.maps.Map | null>(null);
+
+    const [mapLoading, mapError] = useKakaoLoader({
+        appkey: process.env.NEXT_PUBLIC_KAKAO_APP_KEY!,
+        // 필요하면 libraries: ['services']
+    });
 
     const [center, setCenter] = useState({ lat: 35.18, lng: 129.05 });
     const [level, setLevel] = useState(8);
@@ -49,6 +46,26 @@ export default function Page() {
 
     const { push, close, currentDepth } = useModalRouter();
 
+    const { setModalEventHandlers } = useModalEvents()
+
+    // 모달 이벤트
+    useEffect(() => {
+        setModalEventHandlers({
+            // (사용예)
+            //onOpen: ({ segment, segments }) => console.log('map sees open', segments),
+            //onClose: ({segment, segments}) => console.log('map sees close', segments),
+            //onChange: ({ from, to }) => console.log('map sees change', from, to)
+            onClose: ({segment:_, segments}) => {
+                // 모달 닫을때 주차장 선택 해제
+                if(segments && segments.length === 3 && segments[1] === '(.)board') {
+                    setSelectedParking(null);
+                }
+            }
+        })
+        return () => setModalEventHandlers({})
+    }, [setModalEventHandlers])
+
+
     // 지도 Relayout (패널 열림/닫힘 시 지도 깨짐 방지)
     useEffect(() => {
         if (!mapObj) return;
@@ -66,8 +83,8 @@ export default function Page() {
         reloadList();
     }, [mapObj, parkingCategory, parkingType, feeInfo])
 
-    useEffect(()=>{
-        if(selectedParking != null) {
+    useEffect(() => {
+        if (selectedParking != null) {
             push(`/board/${selectedParking.parkingId}`, 1);
         }
     }, [selectedParking]);
@@ -75,26 +92,14 @@ export default function Page() {
     const reloadList = async () => {
         if (!mapObj) return;
 
-        //var center = mapObj.getCenter();
-        //console.log("현재 중심 좌표:", center.getLat(), center.getLng());
-
-        // const params = {
-        //     latitude: center.getLat(),
-        //     longitude: center.getLng()
-        // };
-
-        //const queryString = new URLSearchParams(params).toString();
-        //const res = await fetchAPI(`/parking?${queryString}`);
-
         const mapBounds = mapObj.getBounds();
 
-        // 2. 남서쪽(South-West) 좌표: minLat, minLng
+        // 남서쪽(South-West) 좌표: minLat, minLng
         const sw = mapBounds.getSouthWest();
 
-        // 3. 북동쪽(North-East) 좌표: maxLat, maxLng
+        // 북동쪽(North-East) 좌표: maxLat, maxLng
         const ne = mapBounds.getNorthEast();
 
-        // 4. 상태 업데이트 및 콘솔 확인
         const cond = {
             minLatitude: String(sw.getLat()),
             minLongitude: String(sw.getLng()),
@@ -147,96 +152,67 @@ export default function Page() {
 
     return (
         <>
-            <Script
-                src={KAKAO_SDK_URL}
-                strategy="afterInteractive"
-                onLoad={() => window.kakao.maps.load(() => setLoaded(true))}
-            />
-
             <main className="relative w-screen h-screen overflow-hidden bg-gray-100">
                 {/* ======================= */}
                 {/* 지도 영역 (배경)     */}
                 {/* ======================= */}
                 <div className="absolute inset-0 z-0">
-                    {loaded ? (
-                        <Map
-                            center={center}
-                            className="w-full h-full"
-                            level={level}
-                            isPanto
-                            onCreate={setMapObj}
-                            onZoomChanged={onMapZoomChanged}
-                            onDragEnd={onMapDragEnd}
-                        >
-                            {[...parkings, ...parkingClusters, ...parkingGroups].map((p, idx) => (
-                                <ClusterMarker
-                                    // 고유 ID가 없으면 좌표 조합해서 key 생성 (리렌더링 최적화)
-                                    key={`${p.latitude}-${p.longitude}-${idx}`}
-                                    data={p}
-                                    onClickMarker={(data) => {
-                                        console.log("주차장 상세 클릭:", data);
-                                        // 여기서 상세 모달(Modal) 띄우기 로직 실행
-                                        if ('parkingList' in data) {
-                                            const parkingGroup = data as ParkingGroup;
-                                            setSelectedParkingGroup(parkingGroup);
-                                            setSelectedParking(parkingGroup.parkingList[0]);
-                                            setMainOpen(true);
-                                        } else {
-                                            setSelectedParking(data as Parking);
-                                            setMainOpen(true);
-                                        }
-                                    }}
-                                    onClusterclick={(cluster) => {
-                                        const map = mapObj!;
-                                        map.setCenter(new kakao.maps.LatLng(cluster.latitude, cluster.longitude));
-
-                                        const currentLevel = map.getLevel();
-                                        map.setLevel(currentLevel - 2, { animate: true });
-                                    }}
-                                />
-                            ))}
-
-                            {myLocation && <MyLocationMarker position={myLocation} />}
-                            {/* 마커 예시 */}
-
-                            {selectedParkingGroup && <CustomOverlayMap
-                                position={{ lat: selectedParkingGroup.latitude, lng: selectedParkingGroup.longitude }}
-                                clickable={true}
-                                yAnchor={1}
+                    {
+                        mapLoading || mapError ? 
+                            <div className="flex items-center justify-center w-full h-full text-gray-500">
+                                {mapError ? 'kakao map load error' : mapLoading ? '지도를 불러오는 중...' : ''}
+                            </div>
+                        : (
+                            <Map
+                                center={center}
+                                className="w-full h-full"
+                                level={level}
+                                isPanto
+                                onCreate={setMapObj}
+                                onZoomChanged={onMapZoomChanged}
+                                onDragEnd={onMapDragEnd}
+                                onClick={() => { setSelectedParkingGroup(null) }}
                             >
-                                {/* 커스텀 디자인 영역 */}
-                                <div className="absolute top-0 left-0 w-480 h-270 bg-red-500/50" onClick={(e) => { e.preventDefault(); setSelectedParkingGroup(null) }}>
-                                </div>
-                                <div className="bg-white p-2 rounded shadow-lg border border-gray-300 relative">
-                                    {
-                                        selectedParkingGroup.parkingList.map((p, idx) =>
-                                            <div key={`${p.parkingId}-${idx}`}
-                                                className='p-2 hover:bg-gray-200 cursor-pointer'
-                                                onClick={() => {
-                                                    setSelectedParking(p);
-                                                    setSelectedParkingGroup(null);
-                                                    setMainOpen(true);
-                                                }}
-                                            >
-                                                {p.parkingName}
-                                            </div>)
-                                    }
+                                {
+                                    // 기본 단일 마커
+                                    parkings.map((p, idx) => (
+                                        <SingleParkingMarker key={p.parkingId} data={p} onClickMarker={() => {
+                                            setSelectedParking(p);
+                                            //setMainOpen(true);
+                                        }} />
+                                    ))
+                                }
 
-                                    {/* 닫기 버튼 */}
-                                    {/* <button
-                                        onClick={() => setSelectedParkingGroup(null)}
-                                        className="absolute top-1 right-1 text-gray-400 hover:text-gray-600"
-                                    >
-                                        X
-                                    </button> */}
-                                </div>
-                            </CustomOverlayMap>}
-                        </Map>
-                    ) : (
-                        <div className="flex items-center justify-center w-full h-full text-gray-500">
-                            지도를 불러오는 중...
-                        </div>
-                    )}
+                                {
+                                    // 동일 좌표 그룹 마커
+                                    parkingGroups.map((pg, idx) => (
+                                        <GroupParkingMarker key={`group_${pg.latitude}_${pg.longitude}`} data={pg} onClickMarker={() => {
+                                            setSelectedParkingGroup(pg);
+                                            //setSelectedParking(pg.parkingList[0]);
+                                            //setMainOpen(true);
+                                        }} />
+                                    ))
+                                }
+
+                                {
+                                    // 클러스터 마커
+                                    parkingClusters.map((pc, idx) => (
+                                        <ClusterMarker key={`cluster_${pc.latitude}_${pc.longitude}`} data={pc} onClickMarker={() => {
+                                            const map = mapObj!;
+                                            map.setCenter(new kakao.maps.LatLng(pc.latitude, pc.longitude));
+
+                                            const currentLevel = map.getLevel();
+                                            map.setLevel(currentLevel - 2, { animate: true });
+                                        }} />
+                                    ))
+                                }
+
+                                {myLocation && <MyLocationMarker position={myLocation} />}
+                                {selectedParkingGroup && <ParkingGroupList selectedParkingGroup={selectedParkingGroup} setSelectedParking={setSelectedParking} setMainOpen={setMainOpen}/>}
+
+                            </Map>
+                        )
+                    }
                 </div>
 
 
@@ -246,6 +222,7 @@ export default function Page() {
                 <DesktopPanel parkingLots={[...parkings, ...parkingGroups.map(p => p.parkingList).flat()]}
                     selectedParking={selectedParking}
                     setSelectedParking={setSelectedParking}
+                    parkingClusters={parkingClusters}
                     mainOpen={mainOpen}
                     setMainOpen={setMainOpen}
                     reloadList={reloadList}
@@ -254,8 +231,8 @@ export default function Page() {
                     parkingType={parkingType}
                     setParkingType={setParkingType}
                     feeInfo={feeInfo}
-                    setFeeInfo={setFeeInfo}                    
-                    />
+                    setFeeInfo={setFeeInfo}
+                />
 
 
                 {/* ======================= */}

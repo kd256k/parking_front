@@ -1,12 +1,36 @@
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
-
-import BackButton from '@/components/BackButton';
 import { Parking } from '@/types/parking';
 import { fetchAPI } from '@/utils/fetchAPI';
 import { notFound } from 'next/navigation';
 import CommentArea from './CommentArea';
+import MiniMap from './MiniMap';
+import BackButton from '@/app/board/[id]/BackButton';
 import { IoArrowBack } from "react-icons/io5";
+
+function LabelBlock({label, value}:{label:string, value:string|number}) {
+    return (
+        <div className="bg-sky-100 text-sky-500 font-bold p-4 rounded-3xl text-center">
+            <div>{label}</div>
+            <div className="text-2xl text-sky-600">{value}</div>
+        </div>
+    )
+}
+
+function OperatingTimeBlock({label, start, end}:{label:string, start:string|null, end:string|null}) {
+    return (
+        <div className="flex flex-col justify-between items-center rounded-xl p-2 bg-sky-400 text-white">
+            <div className="font-bold">{label}</div>
+            <div>{start && end ? `${start.substring(0,5)} ~ ${end.substring(0,5)}` : "---"}</div>
+        </div>
+    )
+}
+
+function DesignSpan({children}:{children:React.ReactNode}) {
+    return (
+         <span className="font-bold bg-sky-400 text-white px-2 py-1 rounded-xl">{children}</span>
+    )
+}
 
 export default async function BoardDetailPage({params} : {params : Promise<{ id: string }>} ) {
     const { id } = await params;
@@ -29,53 +53,77 @@ export default async function BoardDetailPage({params} : {params : Promise<{ id:
 
     const item : Parking = await fetchData();
 
-    return (
-        <div className="w-full">
-        
-            <div className="w-full p-10">
-                <div className="flex justify-between items-start">
-                    <BackButton className="text-white p-4 inline-flex items-center text-2xl bg-blue-400 rounded-full"><IoArrowBack /></BackButton>
-                    <p className="text-center font-bold text-4xl mb-10 text-white drop-shadow-[0_0_5px_rgba(0,0,0,1)]">{item.parkingName}</p>
-                    <div className="w-14"></div>
-                </div>
+    const mapLocation = {lat:item.latitude, lng:item.longitude};
 
-                <div className="w-full grid grid-cols-[15%_85%] p-5 space-y-5 rounded-xl shadow-xl bg-yellow-50 text-lg">
-                    <div className="text-right pr-5">지역구군</div>
-                    <div className="font-bold">{item.parkingCategory}</div>
-                    <div className="text-right pr-5">기간</div>
-                    <div className="font-bold">{item.holidayEnd}</div>
-                    <div className="text-right pr-5 flex justify-end items-start">주소</div>
-                    <div className="font-bold">
-                        <div className="flex items-center">
-                            <span>{item.addressRoad}<br/>{item.addressJibun}</span>
-                            {/* <a className="text-white px-4 py-2 -my-2 rounded ml-2 inline-flex items-center text-sm bg-green-400" target="_blank" href={naverUrl}>
-                                <img className="w-7 h-7 -m-2 mr-1" src="https://maps-service.pstatic.net/pcweb_navermap_v5/251024-387deda/assets/icons/favicon.ico" />
-                                <span>새창에서 네이버지도 보기</span>
-                            </a> */}
+    return (
+        <div className={`w-full`}>
+            <div className="w-full">
+                <div className="p-10 flex justify-between items-end bg-sky-500 rounded-t-4xl">
+                    <div className="flex justify-start items-start">
+                        <BackButton className="-ml-4 text-white p-4 inline-flex items-center text-2xl bg-sky-400 rounded-full"><IoArrowBack /></BackButton>
+                        <div className="flex flex-col justify-start items-start pl-4">
+                            <div className="mb-4 flex justify-start space-x-2">
+                                <DesignSpan>{item.regionMain}</DesignSpan>
+                                <DesignSpan>{item.regionSub}</DesignSpan>
+                                <DesignSpan>{item.parkingCategory}</DesignSpan>
+                                <DesignSpan>{item.parkingType}</DesignSpan>
+                            </div>
+                            <div className="text-center font-bold text-4xl text-white">{item.parkingName}</div>
                         </div>
-                        {/* <div className="w-full overflow-hidden rounded-xl mt-5 border border-yellow-400">
-                            <iframe src={getNaverMapUrl(item.LNG, item.LAT)} className="w-[calc(100%+480px)] h-100 -ml-[480px] overflow-hidden" />
-                        </div> */}
                     </div>
-                    {/* <div className="text-right pr-5">대표메뉴</div>
-                    <div className="font-bold">{item.RPRSNTV_MENU}</div>
-                    <div className="text-right pr-5">연락처</div>
-                    <div className="font-bold">{item.CNTCT_TEL}</div>
-                    <div className="text-right pr-5">홈페이지</div>
-                    <div className="font-bold">
+                    <div className="font-bold text-right">
+                        <div className="text-2xl text-white">{item.addressRoad ? item.addressRoad : item.addressJibun}</div>
                         {
-                            item.HOMEPAGE_URL ?
-                                <a className="text-blue-500 hover:underline cursor-pointer" target="_blank" href={item.HOMEPAGE_URL}>{item.HOMEPAGE_URL}</a>
-                                : <span>홈페이지 정보가 없습니다.</span>
+                            item.addressRoad && item.addressJibun && <div className="text-gray-100">(지번 : {item.addressJibun})</div>
                         }
                     </div>
-                    <div className="text-right pr-5">상세내용</div>
-                    <div className="whitespace-pre-wrap font-bold">{description}</div> */}
                 </div>
+
+                <div className="w-full grid grid-cols-[67%_33%] bg-sky-50">
+                    <div className="w-full px-10 pb-5">
+                        <div className="w-full mt-5 grid grid-cols-4 gap-4">
+                            <LabelBlock label="주차장 구분" value={item.parkingCategory} />
+                            <LabelBlock label="주차장 유형" value={item.parkingType} />
+                            <LabelBlock label="요금 정보" value={item.feeInfo} />
+                            <LabelBlock label="주차 구획수" value={item.parkingSpaces} />
+                        </div>
+                        <div className="w-full mt-5 grid grid-cols-[33%_67%] gap-2">
+                            <div>
+                                <div className="text-gray-400 font-bold mb-3">운영 요일 정보</div>
+                                <div className="flex gap-2">
+                                    {item.operatingDays.split('+').map((item, index)=><DesignSpan key={index}>{item}</DesignSpan>)}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-gray-400 font-bold mb-2">운영 시간 정보</div>
+                                <div className="grid grid-cols-3 gap-2 rounded-2xl">
+                                    <OperatingTimeBlock label="평일" start={item.weekdayStart} end={item.weekdayEnd} />
+                                    <OperatingTimeBlock label="토요일" start={item.saturdayStart} end={item.saturdayEnd} />
+                                    <OperatingTimeBlock label="공휴일" start={item.holidayStart} end={item.holidayEnd} />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="w-full mt-5 grid grid-cols-3 gap-2">
+                            <div>
+                                <div className="text-gray-400 font-bold mb-2">관리기관</div>
+                                <DesignSpan>{item.managementAgency}</DesignSpan>
+                            </div>
+                            <div>
+                                <div className="text-gray-400 font-bold mb-2">연락처</div>
+                                <DesignSpan>{item.phoneNumber}</DesignSpan>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="w-full p-5">
+                        <MiniMap pos={mapLocation} />
+                    </div>
+                </div>
+
             </div>
             
-            <div className="w-full mx-auto">
-                <div className="mx-10 p-5 rounded-xl shadow-xl bg-yellow-50 text-lg">
+            <div className="w-full mx-auto bg-sky-50 rounded-b-xl">
+                <div className="pt-10 text-3xl font-bold text-center text-sky-700">주차장 리뷰</div>
+                <div className="p-5 text-lg">
                     <CommentArea parkingId={id} />
                 </div>
             </div>

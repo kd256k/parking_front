@@ -1,9 +1,7 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { IoCloseOutline } from "react-icons/io5";
-import { ModalProvider } from "@/contexts/ModalContext";
-import { useModalRouter } from "@/hooks/useModalRouter";
+import { ModalProvider, useModalRouter } from "@/utils/ModalUtil";
 
 export default function Modal({
     children,
@@ -37,7 +35,7 @@ export default function Modal({
                         </div>
                     }
                     <div
-                        className="p-6 w-full"
+                        className="w-full"
                         onClick={(e) => e.stopPropagation()} // 내부 클릭 시 닫기 방지
                     >
                         {children}

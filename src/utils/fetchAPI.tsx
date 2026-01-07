@@ -68,6 +68,7 @@ export const fetchAPI = async (url: string, options: RequestInit = {}) => {
           continue; // 갱신 성공! 루프를 돌아 재요청 (새 쿠키 자동 사용)
         } else {
           // 갱신 실패 (리프레시 토큰도 만료됨)
+          delete localStorage.__loginUserInfo__; // jotai 로그인 정보 삭제
           // throw new Error('Session expired'); // 혹은 아래처럼 리다이렉트
           window.location.href = '/login';
           break; // 루프 탈출 -> 로그인 페이지로

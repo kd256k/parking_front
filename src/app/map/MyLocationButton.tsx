@@ -49,13 +49,13 @@ export default function MyLocationButton({
                 onClick={handleMyLocation}
                 disabled={isLoadingLocation}
                 className={`
-                            hidden md:flex absolute right-6 bottom-6 z-50 bg-white p-3 rounded-full shadow-lg 
-                            hover:bg-gray-50 text-gray-700 transition-colors
+                            hidden md:flex absolute right-6 bottom-6 z-50 bg-sky-500 text-white p-3 rounded-full shadow-lg 
+                            hover:bg-sky-600 transition-colors
                             ${isLoadingLocation ? 'cursor-wait opacity-80' : ''}
                         `}
                 title="내 위치"
             >
-                {isLoadingLocation ? <AiOutlineLoading3Quarters className="w-6 h-6 text-blue-600 animate-spin" /> : <MdOutlineGpsFixed className="w-6 h-6" />}
+                {isLoadingLocation ? <AiOutlineLoading3Quarters className="w-6 h-6 text-sky-100 animate-spin" /> : <MdOutlineGpsFixed className="w-6 h-6" />}
             </button>
 
             {/* 모바일용 버튼 (패널 높이에 따라 위치 자동 조정) */}
@@ -68,7 +68,7 @@ export default function MyLocationButton({
                         ${isLoadingLocation ? 'cursor-wait opacity-80' : ''}
                     `}
             >
-                {isLoadingLocation ? <AiOutlineLoading3Quarters className="w-6 h-6 text-blue-600 animate-spin" /> : <MdOutlineGpsFixed className="w-6 h-6" />}
+                {isLoadingLocation ? <AiOutlineLoading3Quarters className="w-6 h-6 text-sky-100 animate-spin" /> : <MdOutlineGpsFixed className="w-6 h-6" />}
             </button>
         </>
     );

@@ -1,6 +1,6 @@
 import TailSelect from '@/components/TailSelect';
 import { feeInfoList, parkingCategoryList, parkingTypeList } from '@/constants/parking';
-import { Parking } from '@/types/parking';
+import { Parking, ParkingCluster } from '@/types/parking';
 import React, { useState } from 'react';
 
 import { IoIosArrowBack } from "react-icons/io";
@@ -10,6 +10,7 @@ export default function DesktopPanel({
     parkingLots,
     selectedParking,
     setSelectedParking,
+    parkingClusters,
     mainOpen,
     setMainOpen,
     reloadList,
@@ -20,6 +21,7 @@ export default function DesktopPanel({
     parkingLots: Parking[];
     selectedParking: Parking | null;
     setSelectedParking: React.Dispatch<React.SetStateAction<Parking | null>>;
+    parkingClusters: ParkingCluster[];
     mainOpen: boolean;
     setMainOpen: React.Dispatch<React.SetStateAction<boolean>>;
     reloadList: (append: boolean) => void;
@@ -51,20 +53,8 @@ export default function DesktopPanel({
                 <div className={`hidden h-full md:flex transition-transform duration-300 ease-in-out ${mainOpen ? 'translate-x-0' : '-translate-x-full'} /* 메인 닫히면 전체 퇴장 */`}>
 
                     {/* [좌측] 메인 리스트 패널 */}
-                    <div className="w-80 h-full bg-white shadow-xl flex flex-col pointer-events-auto border-r z-30">
-                        <div className="p-4 border-b bg-blue-600 text-white flex justify-between items-center shrink-0">
-                            <h1 className="font-bold text-lg">주차장 목록</h1>
-                            <div>
-                                <button
-                                    onClick={() => reloadList(false)}
-                                    className="bg-blue-700 hover:bg-blue-800 px-3 py-1 rounded text-sm transition-colors"
-                                >
-                                    갱신
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-3 gap-2 p-4 border-b border-gray-300">
+                    <div className="w-80 h-full bg-sky-50 shadow-xl flex flex-col pointer-events-auto border-r border-sky-200 z-30">
+                        <div className="grid grid-cols-3 gap-2 p-4 bg-sky-100">
                             <TailSelect ref={parkingCategoryRef}
                                 opk={prependAllToList('', parkingCategoryList)}
                                 opv={prependAllToList(':: 전체 ::', parkingCategoryList)}
@@ -102,7 +92,12 @@ export default function DesktopPanel({
                                 </button>
                             ))
                                 :
-                            <div className="font-bold text-center  mt-2 p-5 rounded">조회된 항목이 없습니다.</div>
+                                <div className="font-bold text-center  mt-2 p-5 rounded">
+                                    {
+                                        parkingClusters.length > 0 ? '항목을 조회하려면 지도를 확대하세요.' : '조회된 항목이 없습니다.'
+                                    }
+                                    
+                                </div>
                             }
                         </div>
                     </div>
@@ -150,7 +145,7 @@ export default function DesktopPanel({
                         ${mainOpen ? selectedParking ? 'left-80' : 'left-80' : 'left-0'}
                     `}
                 >
-                    <button className="font-bold text-sm bg-white py-5 px-1 rounded-r-md shadow-lg text-gray-700 hover:bg-gray-50 pointer-events-auto" onClick={() => setMainOpen(!mainOpen)}>
+                    <button className="font-bold text-sm bg-sky-400 py-5 px-1 rounded-r-md shadow-lg text-white hover:bg-sky-500 pointer-events-auto" onClick={() => setMainOpen(!mainOpen)}>
                         {mainOpen ? <IoIosArrowBack /> : <IoIosArrowForward />}
                     </button>
                 </div>

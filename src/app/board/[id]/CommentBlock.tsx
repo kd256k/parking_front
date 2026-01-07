@@ -15,7 +15,7 @@ export default function CommentBlock({ data, onEdit, onDelete }: { data: Comment
     const [loginUser, _] = useAtom<User | null>(loginUserAtom);
 
     const isAuthor = useMemo<boolean>(()=>{
-        console.log('isAuthor', loginUser);
+        //console.log('isAuthor', loginUser);
         if(!loginUser) {
             return false;
         }

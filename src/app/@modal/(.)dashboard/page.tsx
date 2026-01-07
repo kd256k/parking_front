@@ -1,7 +1,4 @@
-export const dynamic = 'force-dynamic';
-
 import Modal from '@/components/Modal';
-import React, { Suspense } from 'react';
 import DashboardPage from '@/app/dashboard/page';
 import AutoFitScale from "@/components/AutoFitScale";
 

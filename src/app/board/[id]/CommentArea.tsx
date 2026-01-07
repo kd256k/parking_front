@@ -48,7 +48,7 @@ export default function CommentArea({parkingId} : {parkingId:string}) {
             rate
         }
 
-        const res = await fetchAPI(`/comment/${parkingId}`, {
+        const res = await fetchAPI(`/member/comment/${parkingId}`, {
             method: 'POST',
             body: JSON.stringify(data)
         });
@@ -64,7 +64,7 @@ export default function CommentArea({parkingId} : {parkingId:string}) {
     }
 
     const onCommentEditClick = async (data: Comment) => {
-        const res = await fetchAPI(`/comment/${parkingId}`, {
+        const res = await fetchAPI(`/member/comment/${parkingId}`, {
             method: 'PUT',
             body: JSON.stringify(data)
         });
@@ -84,7 +84,7 @@ export default function CommentArea({parkingId} : {parkingId:string}) {
             return;
         }
 
-        const res = await fetchAPI(`/comment/${data.commentId}`, {
+        const res = await fetchAPI(`/member/comment/${data.commentId}`, {
             method: 'DELETE'
         });
 
@@ -114,15 +114,15 @@ export default function CommentArea({parkingId} : {parkingId:string}) {
                                 <StarRating totalStars={5} onRate={(score) => setRate(score)} />
                             </div>
                             <div>
-                                <button className='bg-green-400 rounded text-white px-3 py-1' onClick={postComment}>등록</button>
+                                <button className='bg-sky-400 rounded text-white px-3 py-1' onClick={postComment}>등록</button>
                             </div>
                         </div>
                     </div>
                     :
                     <>
-                        <div className="mb-3 font-bold">별점을 남기려면 로그인이 필요합니다.</div>
+                        <div className="mb-3 font-bold text-sky-700">별점을 남기려면 로그인이 필요합니다.</div>
                         <div>
-                            <Link className='bg-blue-400 rounded text-white px-3 py-2' href='/login'>로그인</Link>
+                            <Link className='bg-sky-400 rounded text-white px-3 py-2' href='/login'>로그인</Link>
                         </div>
                     </>
             }

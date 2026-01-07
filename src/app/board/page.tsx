@@ -4,8 +4,8 @@ import Pagination from '@/components/Pagination';
 import TailSelect from '@/components/TailSelect';
 import TailTable from '@/components/TailTable';
 import { feeInfoList, parkingCategoryList, parkingTypeList } from '@/constants/parking';
-import { useIsModal } from '@/contexts/ModalContext';
-import { useModalRouter } from '@/hooks/useModalRouter';
+import { useIsModal } from '@/utils/ModalUtil';
+import { useModalRouter } from '@/utils/ModalUtil';
 import { Parking } from '@/types/parking';
 import { TailTableHeader } from '@/types/tailtable';
 import { fetchAPI } from '@/utils/fetchAPI';
@@ -107,7 +107,11 @@ export default function BoardPage() {
 
         const url = `/board/${value.parkingId}`;
 
-        push(url);
+        if(isModal) {
+            push(url);
+        } else {
+            window.location.href = url;
+        }
     }
 
     const prependAllToList = (allStr: string, list:string[]) => {
@@ -134,8 +138,8 @@ export default function BoardPage() {
     }, [regionMain]);
 
     return (
-        <div>
-            <div className="p-5 grid grid-cols-5 space-x-5 bg-amber-50 rounded-lg">
+        <>
+            <div className="p-5 grid grid-cols-5 space-x-5 bg-sky-50 rounded-lg">
                 <TailSelect ref={regionMainRef}
                     opk={prependAllToList('', regionMainList)}
                     opv={prependAllToList(':: 전국 ::', regionMainList)}
@@ -177,16 +181,16 @@ export default function BoardPage() {
                 parkingList.length > 0 ?
                 <>
                     <TailTable className={`mt-3`} headers={headers} data={parkingList}
-                        theadClassName="bg-yellow-600 border-yellow-400"
-                        trClassName="bg-yellow-100 border-yellow-200 hover:bg-yellow-200 text-yellow-900"
-                        firstTdClassName="text-yellow-900"
+                        theadClassName="bg-sky-600 border-sky-400"
+                        trClassName="bg-sky-100 border-sky-200 hover:bg-sky-200 text-sky-900"
+                        firstTdClassName="text-sky-900"
                         onTrClick={onTrClick}
                     />
-                    <Pagination totalCount={totalCount} numOfRows={numOfRows} pageNo={pageNo.current} changePage={changePage} className="m-5" />
+                    <Pagination totalCount={totalCount} numOfRows={numOfRows} pageNo={pageNo.current} changePage={changePage} className="m-5" currClassName="bg-sky-200" liClassName="bg-sky-50" />
                 </>
                 :
-                <div className="text-xl font-bold text-center bg-yellow-50 mt-2 p-5 rounded">조회된 항목이 없습니다.</div>
+                <div className="text-xl font-bold text-center bg-sky-50 mt-2 p-5 rounded">조회된 항목이 없습니다.</div>
             }
-        </div>
+        </>
     );
 }

@@ -9,7 +9,7 @@ import { useAtom } from "jotai";
 import { User } from "@/types/user";
 import { loginUserAtom } from "@/atoms/atom";
 import { useRouter } from 'next/navigation';
-import { useIsModal } from "@/contexts/ModalContext";
+import { useIsModal } from "@/utils/ModalUtil";
 
 export default function LoginPage() {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
