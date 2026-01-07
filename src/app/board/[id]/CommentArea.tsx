@@ -11,7 +11,7 @@ import { loginUserAtom } from '@/atoms/atom';
 import Link from 'next/link';
 import StarRating from './StarRating';
 
-export default function CommentArea({parkingId} : {parkingId:string}) {
+export default function CommentArea({ parkingId }: { parkingId: string }) {
 
     const [loginUser, _] = useAtom<User | null>(loginUserAtom);
 
@@ -25,8 +25,8 @@ export default function CommentArea({parkingId} : {parkingId:string}) {
     const fetchComment = async () => {
         const res = await fetchAPI(`/comment/${parkingId}`);
 
-        if(!res.ok) {
-            if(res.status === 404) {
+        if (!res.ok) {
+            if (res.status === 404) {
                 notFound();
             }
 
@@ -39,12 +39,12 @@ export default function CommentArea({parkingId} : {parkingId:string}) {
     }
 
     const postComment = async () => {
-        if(!textareaRef || !textareaRef.current) {
+        if (!textareaRef || !textareaRef.current) {
             return;
         }
 
         const data = {
-            content : textareaRef.current.value,
+            content: textareaRef.current.value,
             rate
         }
 
@@ -53,7 +53,7 @@ export default function CommentArea({parkingId} : {parkingId:string}) {
             body: JSON.stringify(data)
         });
 
-        if(!res.ok) {
+        if (!res.ok) {
             alert("댓글 작성에 실패했습니다.\n잠시 후 다시 시도해 주십시오.");
             return;
         }
@@ -69,18 +69,18 @@ export default function CommentArea({parkingId} : {parkingId:string}) {
             body: JSON.stringify(data)
         });
 
-        if(!res.ok) {
+        if (!res.ok) {
             alert("댓글 수정에 실패했습니다.\n잠시 후 다시 시도해 주십시오.");
             return;
         }
 
         data.edited = true;
 
-        setCommentList(commentList=>commentList.map(item=>item.commentId === data.commentId ? data : item));
+        setCommentList(commentList => commentList.map(item => item.commentId === data.commentId ? data : item));
     }
 
     const onCommentDeleteClick = async (data: Comment) => {
-        if(!confirm('삭제하시겠습니까?\n\n(삭제된 댓글은 복구할 수 없습니다.)')) {
+        if (!confirm('삭제하시겠습니까?\n\n(삭제된 댓글은 복구할 수 없습니다.)')) {
             return;
         }
 
@@ -88,57 +88,57 @@ export default function CommentArea({parkingId} : {parkingId:string}) {
             method: 'DELETE'
         });
 
-        if(!res.ok) {
+        if (!res.ok) {
             alert("댓글 삭제에 실패했습니다.\n잠시 후 다시 시도해 주십시오.");
             return;
         }
 
-        setCommentList(commentList=>commentList.filter(item=>item.commentId !== data.commentId));
+        setCommentList(commentList => commentList.filter(item => item.commentId !== data.commentId));
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchComment();
     }, []);
 
     return (
         <div className='flex flex-col mx-auto'>
-
-            <div className="text-center bg-white mx-auto p-5 rounded-xl shadow-xl">
             {
-                loginUser ?
-                    <div className="min-w-150 w-2/3 flex flex-col">
-                        <textarea ref={textareaRef} className='min-w-90 w-full h-20 p-2 border border-gray-300 rounded' placeholder='댓글을 입력하세요.'></textarea>
-                        <div className="flex justify-between items-center mt-4">
-                            <div className="flex items-center">
-                                <span className="font-bold mr-3">별점 : </span>
-                                <StarRating totalStars={5} onRate={(score) => setRate(score)} />
-                            </div>
-                            <div>
-                                <button className='bg-sky-400 rounded text-white px-3 py-1' onClick={postComment}>등록</button>
-                            </div>
-                        </div>
-                    </div>
-                    :
-                    <>
-                        <div className="mb-3 font-bold text-sky-700">별점을 남기려면 로그인이 필요합니다.</div>
-                        <div>
-                            <Link className='bg-sky-400 rounded text-white px-3 py-2' href='/login'>로그인</Link>
-                        </div>
-                    </>
+                commentList.length === 0 && <div className='text-center font-bold text-sky-700 mb-4'>이 주차장에 리뷰가 없습니다.<br/>첫 리뷰를 남겨보세요.</div>
             }
+            <div className="text-center bg-white mx-auto p-5 rounded-xl shadow-xl">
+                {
+                    loginUser ?
+                        <div className="min-w-150 w-2/3 flex flex-col">
+                            <textarea ref={textareaRef} className='min-w-90 p-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none text-lg text-gray-700 leading-relaxed' placeholder='댓글을 입력하세요.'></textarea>
+                            <div className="flex justify-between items-center mt-4">
+                                <div className="flex items-center">
+                                    <span className="font-bold mr-3">별점 : </span>
+                                    <StarRating totalStars={5} onRate={(score) => setRate(score)} />
+                                </div>
+                                <div>
+                                    <button className='bg-sky-400 rounded text-white px-3 py-1' onClick={postComment}>등록</button>
+                                </div>
+                            </div>
+                        </div>
+                        :
+                        <>
+                            <div className="mb-3 font-bold text-sky-700">리뷰를 남기려면 로그인이 필요합니다.</div>
+                            <div>
+                                <Link className='bg-sky-400 rounded text-white px-3 py-2' href='/login'>로그인</Link>
+                            </div>
+                        </>
+                }
             </div>
-            
-            
+
+
             <div className="mt-10 flex flex-col justify-center items-center">
                 {
                     commentList.length ?
-                    commentList.map((item, index) => {
-                        return (
-                            <CommentBlock key={item.commentId} data={item} onEdit={onCommentEditClick} onDelete={onCommentDeleteClick} />
-                        );
-                    })
-                    :
-                    <div className='text-center font-bold'>댓글이 없습니다.</div>
+                        commentList.map((item, index) => {
+                            return (
+                                <CommentBlock key={item.commentId} data={item} onEdit={onCommentEditClick} onDelete={onCommentDeleteClick} />
+                            );
+                        }) : <></>
                 }
             </div>
         </div>

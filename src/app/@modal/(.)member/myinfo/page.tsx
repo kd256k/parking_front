@@ -1,10 +1,10 @@
 import Modal from "@/components/Modal";
-import LoginPage from "@/app/login/page";
+import MyInfoPage from "@/app/member/myinfo/page";
 
 export default function Page() {
     return (
         <Modal containerClassName=''>
-            <LoginPage />
+            <MyInfoPage />
         </Modal>
     );
 }

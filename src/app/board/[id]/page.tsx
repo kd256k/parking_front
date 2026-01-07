@@ -79,7 +79,7 @@ export default async function BoardDetailPage({params} : {params : Promise<{ id:
                     </div>
                 </div>
 
-                <div className="w-full grid grid-cols-[67%_33%] bg-sky-50">
+                <div className="w-full grid grid-cols-[60%_40%] bg-sky-50">
                     <div className="w-full px-10 pb-5">
                         <div className="w-full mt-5 grid grid-cols-4 gap-4">
                             <LabelBlock label="주차장 구분" value={item.parkingCategory} />
@@ -91,7 +91,12 @@ export default async function BoardDetailPage({params} : {params : Promise<{ id:
                             <div>
                                 <div className="text-gray-400 font-bold mb-3">운영 요일 정보</div>
                                 <div className="flex gap-2">
-                                    {item.operatingDays.split('+').map((item, index)=><DesignSpan key={index}>{item}</DesignSpan>)}
+                                    {
+                                        item.operatingDays ?
+                                        item.operatingDays.split('+').map((item, index)=><DesignSpan key={index}>{item}</DesignSpan>)
+                                        :
+                                        <DesignSpan>정보 없음</DesignSpan>
+                                    }
                                 </div>
                             </div>
                             <div>

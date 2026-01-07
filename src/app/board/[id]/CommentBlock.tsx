@@ -99,19 +99,19 @@ export default function CommentBlock({ data, onEdit, onDelete }: { data: Comment
             <div className="mt-4">
                 {isEditing ? (
                     <textarea
-                        className="w-full p-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm text-gray-700 leading-relaxed"
+                        className="w-full p-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none text-lg text-gray-700 leading-relaxed"
                         value={editContent}
                         onChange={(e) => setEditContent(e.target.value)}
                     />
                 ) : (
-                    <p className="text-gray-700 text-[15px] leading-relaxed whitespace-pre-wrap">
+                    <p className="text-gray-700 text-lg leading-relaxed whitespace-pre-wrap">
                         {data.content}
                     </p>
                 )}
             </div>
 
             {/* 하단 정보: 날짜 */}
-            <div className="text-xs text-gray-400 font-medium text-right">
+            <div className="text-sm text-gray-400 font-medium text-right">
                 {getFormattedDate(data.createdDate)} {data.edited && " (수정됨)"}
             </div>
         </div >
