@@ -83,8 +83,8 @@ export default function DesktopPanel({
                                 <button
                                     key={p.parkingId}
                                     onClick={() => setSelectedParking(p)}
-                                    className={`w-full text-left p-4 border-b transition-colors hover:bg-gray-50 
-                                        ${selectedParking?.parkingId === p.parkingId ? 'bg-blue-50 border-blue-200' : 'border-gray-100'}`}
+                                    className={`w-full text-left p-4 border-b border-sky-200 transition-colors hover:bg-sky-100 
+                                        ${selectedParking?.parkingId === p.parkingId ? 'bg-sky-200 ' : 'border-sky-50'}`}
                                 >
                                     <div className="font-bold text-gray-800">{p.parkingName}</div>
                                     <div className="text-sm text-gray-500 mt-1">{p.parkingCategory} / {p.parkingType} / {p.feeInfo}</div>
@@ -141,11 +141,11 @@ export default function DesktopPanel({
                 <div
                     className={`
                         hidden h-full md:flex absolute
-                            transition-all duration-300 items-center gap-2
+                            transition-all duration-300 items-center
                         ${mainOpen ? selectedParking ? 'left-80' : 'left-80' : 'left-0'}
                     `}
                 >
-                    <button className="font-bold text-sm bg-sky-400 py-5 px-1 rounded-r-md shadow-lg text-white hover:bg-sky-500 pointer-events-auto" onClick={() => setMainOpen(!mainOpen)}>
+                    <button className={`font-bold text-sm bg-sky-400 py-5 px-1 rounded-r-md shadow-2xl text-white hover:bg-sky-500 pointer-events-auto`} onClick={() => setMainOpen(!mainOpen)}>
                         {mainOpen ? <IoIosArrowBack /> : <IoIosArrowForward />}
                     </button>
                 </div>

@@ -1,12 +1,12 @@
 import Modal from "@/components/Modal";
-import BoardDetailPage from "@/app/board/[id]/page";
 import AspectScroll from "@/components/AspectScroll";
+import MemberUserDetailPage from "@/app/member/user/[id]/page";
 
 export default function Page({params} : {params : Promise<{ id: string }>}) {
     return (
-        <Modal containerClassName="w-full max-w-270 px-4">
+        <Modal containerClassName="w-full max-w-170 px-4">
             <AspectScroll ratio={0.85}>
-                <BoardDetailPage params={params} />
+                <MemberUserDetailPage params={params} />
             </AspectScroll>
         </Modal>
     );

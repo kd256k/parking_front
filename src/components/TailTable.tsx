@@ -14,8 +14,8 @@ export default function TailTable<T>({ className = '',
 
     return (
         <div className={`overflow-x-auto shadow-md sm:rounded-lg ${className}`}>
-            <table className="w-full text-sm text-left rtl:text-right text-blue-100 dark:text-blue-100">
-                <thead className={`text-xs text-white uppercase border-b ${theadClassName}`}>
+            <table className="w-full text-left rtl:text-right text-blue-100 dark:text-blue-100">
+                <thead className={`text-white uppercase border-b ${theadClassName}`}>
                     <tr>
                         { headers.map(header=> <th key={header.key} scope="col" className={`px-6 py-3 text-center ${header.hidden ? 'hidden' : ''}`}>{header.name}</th>) }
                     </tr>

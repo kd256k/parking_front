@@ -13,7 +13,21 @@ export default function MiniMap({ pos }: { pos: { lat: number, lng: number } }) 
 
     return (
         <Map center={pos} level={7} className="w-full h-full rounded-xl" draggable={false} zoomable={false}>
-            <MapMarker position={pos} />
+            <MapMarker position={pos}
+                image={{
+                    src: "/marker/parking.svg", // 마커이미지 주소
+                    size: {
+                        width: 50,
+                        height: 50,
+                    }, // 마커이미지 크기
+                    options: {
+                        offset: {
+                            x: 25,
+                            y: 50,
+                        }, // 마커이미지 옵션. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정.
+                    },
+                }}
+            />
         </Map>
     );
 }

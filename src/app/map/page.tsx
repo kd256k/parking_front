@@ -44,7 +44,7 @@ export default function Page() {
     const [parkingType, setParkingType] = useState<string>('');
     const [feeInfo, setFeeInfo] = useState<string>('');
 
-    const { push, close, currentDepth } = useModalRouter();
+    const { push } = useModalRouter();
 
     const { setModalEventHandlers } = useModalEvents()
 
@@ -208,7 +208,7 @@ export default function Page() {
                                 }
 
                                 {myLocation && <MyLocationMarker position={myLocation} />}
-                                {selectedParkingGroup && <ParkingGroupList selectedParkingGroup={selectedParkingGroup} setSelectedParking={setSelectedParking} setMainOpen={setMainOpen}/>}
+                                {selectedParkingGroup && <ParkingGroupList selectedParkingGroup={selectedParkingGroup} setSelectedParking={setSelectedParking} setSelectedParkingGroup={setSelectedParkingGroup} setMainOpen={setMainOpen}/>}
 
                             </Map>
                         )

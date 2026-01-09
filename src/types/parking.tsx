@@ -151,6 +151,17 @@ export interface Parking {
      * @example "2016-09-13" 
      */
     lastModified: string | null;
+
+
+    /**
+     * 댓글 수량
+     */
+    commentCount: number | null;
+
+    /**
+     * 평균 별점
+     */
+    avgRate: number | null;
 }
 
 

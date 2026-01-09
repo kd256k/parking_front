@@ -15,7 +15,7 @@ export default function Modal({
     containerClassName?: string;
 }) {
 
-    const { push, close, currentDepth } = useModalRouter();
+    const { close } = useModalRouter();
 
     const closeModal = () => {
         close();

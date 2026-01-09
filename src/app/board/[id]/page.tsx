@@ -5,10 +5,12 @@ import { fetchAPI } from '@/utils/fetchAPI';
 import { notFound } from 'next/navigation';
 import CommentArea from './CommentArea';
 import MiniMap from './MiniMap';
-import BackButton from '@/app/board/[id]/BackButton';
+import ModalBackButton from '@/components/ModalBackButton';
 import { IoArrowBack } from "react-icons/io5";
+import StarRating from './StarRating';
+import DesignSpan from '@/components/DesignSpan';
 
-function LabelBlock({label, value}:{label:string, value:string|number}) {
+function LabelBlock({ label, value }: { label: string, value: string | number }) {
     return (
         <div className="bg-sky-100 text-sky-500 font-bold p-4 rounded-3xl text-center">
             <div>{label}</div>
@@ -17,22 +19,16 @@ function LabelBlock({label, value}:{label:string, value:string|number}) {
     )
 }
 
-function OperatingTimeBlock({label, start, end}:{label:string, start:string|null, end:string|null}) {
+function OperatingTimeBlock({ label, start, end }: { label: string, start: string | null, end: string | null }) {
     return (
         <div className="flex flex-col justify-between items-center rounded-xl p-2 bg-sky-400 text-white">
             <div className="font-bold">{label}</div>
-            <div>{start && end ? `${start.substring(0,5)} ~ ${end.substring(0,5)}` : "---"}</div>
+            <div>{start && end ? `${start.substring(0, 5)} ~ ${end.substring(0, 5)}` : "정보 없음"}</div>
         </div>
     )
 }
 
-function DesignSpan({children}:{children:React.ReactNode}) {
-    return (
-         <span className="font-bold bg-sky-400 text-white px-2 py-1 rounded-xl">{children}</span>
-    )
-}
-
-export default async function BoardDetailPage({params} : {params : Promise<{ id: string }>} ) {
+export default async function BoardDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
 
     const fetchData = async () => {
@@ -40,8 +36,8 @@ export default async function BoardDetailPage({params} : {params : Promise<{ id:
 
         const res = await fetchAPI(`/parking/detail/${id}`);
 
-        if(!res.ok) {
-            if(res.status === 404) {
+        if (!res.ok) {
+            if (res.status === 404) {
                 notFound();
             }
 
@@ -51,16 +47,16 @@ export default async function BoardDetailPage({params} : {params : Promise<{ id:
         return await res.json();
     }
 
-    const item : Parking = await fetchData();
+    const item: Parking = await fetchData();
 
-    const mapLocation = {lat:item.latitude, lng:item.longitude};
+    const mapLocation = { lat: item.latitude, lng: item.longitude };
 
     return (
         <div className={`w-full`}>
             <div className="w-full">
                 <div className="p-10 flex justify-between items-end bg-sky-500 rounded-t-4xl">
                     <div className="flex justify-start items-start">
-                        <BackButton className="-ml-4 text-white p-4 inline-flex items-center text-2xl bg-sky-400 rounded-full"><IoArrowBack /></BackButton>
+                        <ModalBackButton className="-ml-4 text-white p-4 inline-flex items-center text-2xl bg-sky-400 rounded-full"><IoArrowBack /></ModalBackButton>
                         <div className="flex flex-col justify-start items-start pl-4">
                             <div className="mb-4 flex justify-start space-x-2">
                                 <DesignSpan>{item.regionMain}</DesignSpan>
@@ -79,28 +75,34 @@ export default async function BoardDetailPage({params} : {params : Promise<{ id:
                     </div>
                 </div>
 
-                <div className="w-full grid grid-cols-[60%_40%] bg-sky-50">
-                    <div className="w-full px-10 pb-5">
-                        <div className="w-full mt-5 grid grid-cols-4 gap-4">
+                <div className="w-full p-5 gap-5 mx-auto grid grid-cols-[50%_50%] bg-sky-50">
+                    <div className="w-full pl-5">
+                        <div className="w-full flex items-center gap-2">
+                            <span className="font-bold text-2xl mt-1 text-sky-700">{item.avgRate!.toFixed(1)}</span>
+                            <StarRating initialRating={item.avgRate!} precision={0.1} readOnly={true} size={20} />
+                            <span className="text-md mt-1">리뷰 {item.commentCount}개</span>
+                        </div>
+                        <div className="w-full mt-5 grid grid-cols-2 gap-4">
                             <LabelBlock label="주차장 구분" value={item.parkingCategory} />
                             <LabelBlock label="주차장 유형" value={item.parkingType} />
+                        </div>
+                        <div className="w-full mt-5 grid grid-cols-2 gap-4">
                             <LabelBlock label="요금 정보" value={item.feeInfo} />
                             <LabelBlock label="주차 구획수" value={item.parkingSpaces} />
                         </div>
-                        <div className="w-full mt-5 grid grid-cols-[33%_67%] gap-2">
+                        <div className="w-full mt-12">
                             <div>
-                                <div className="text-gray-400 font-bold mb-3">운영 요일 정보</div>
-                                <div className="flex gap-2">
-                                    {
-                                        item.operatingDays ?
-                                        item.operatingDays.split('+').map((item, index)=><DesignSpan key={index}>{item}</DesignSpan>)
-                                        :
-                                        <DesignSpan>정보 없음</DesignSpan>
-                                    }
+                                <div className="text-gray-400 font-bold mb-2 flex justify-between items-center">
+                                    <div>운영 요일/시간 정보</div>
+                                    <div className="flex gap-2">
+                                        {
+                                            item.operatingDays ?
+                                                item.operatingDays.split('+').map((item, index) => <DesignSpan key={index} bgColor='bg-sky-100' textColor='text-sky-500'>{item}</DesignSpan>)
+                                                :
+                                                <></>
+                                        }
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <div className="text-gray-400 font-bold mb-2">운영 시간 정보</div>
                                 <div className="grid grid-cols-3 gap-2 rounded-2xl">
                                     <OperatingTimeBlock label="평일" start={item.weekdayStart} end={item.weekdayEnd} />
                                     <OperatingTimeBlock label="토요일" start={item.saturdayStart} end={item.saturdayEnd} />
@@ -108,28 +110,27 @@ export default async function BoardDetailPage({params} : {params : Promise<{ id:
                                 </div>
                             </div>
                         </div>
-                        <div className="w-full mt-5 grid grid-cols-3 gap-2">
+                        <div className="w-full mt-12 grid grid-cols-2 gap-2">
                             <div>
                                 <div className="text-gray-400 font-bold mb-2">관리기관</div>
-                                <DesignSpan>{item.managementAgency}</DesignSpan>
+                                <DesignSpan>{item.managementAgency ? item.managementAgency : '정보 없음'}</DesignSpan>
                             </div>
                             <div>
                                 <div className="text-gray-400 font-bold mb-2">연락처</div>
-                                <DesignSpan>{item.phoneNumber}</DesignSpan>
+                                <DesignSpan>{item.phoneNumber ? item.phoneNumber : '정보 없음'}</DesignSpan>
                             </div>
                         </div>
                     </div>
-                    <div className="w-full p-5">
+                    <div className="w-full pr-5">
                         <MiniMap pos={mapLocation} />
                     </div>
                 </div>
 
             </div>
-            
+
             <div className="w-full mx-auto bg-sky-50 rounded-b-xl">
-                <div className="pt-10 text-3xl font-bold text-center text-sky-700">주차장 리뷰</div>
                 <div className="p-5 text-lg">
-                    <CommentArea parkingId={id} />
+                    <CommentArea parkingId={id}/>
                 </div>
             </div>
 

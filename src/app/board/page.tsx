@@ -14,7 +14,7 @@ import React, { MouseEvent, useEffect, useRef, useState } from 'react';
 export default function BoardPage() {
     const isModal = useIsModal();
 
-    const { push, close, currentDepth } = useModalRouter();
+    const { push, router:modalRouter } = useModalRouter();
 
     const headers: TailTableHeader<Parking>[] = [
         { key: 'parkingName', name: '주차장명', className: 'text-center' },
@@ -25,38 +25,39 @@ export default function BoardPage() {
         { key: 'regionSub', name: '지역상세', className: 'text-center' },
     ];
 
-    const [parkingList, setParkingList] = useState<Parking[]>([]);
+    const [filterLoaded, setFilterLoaded] = useState<boolean>(false);
+    const [parkingList, setParkingList] = useState<Parking[]|null>(null);
 
     const [regionMainList, setRegionMainList] = useState<string[]>([]);
     const [regionSubList, setRegionSubList] = useState<string[]>([]);
 
 
     // 필터
-    const [regionMain, setRegionMain] = useState<string>('');
-    const [regionSub, setRegionSub] = useState<string>('');
-    const [parkingCategory, setParkingCategory] = useState<string>('');
-    const [parkingType, setParkingType] = useState<string>('');
-    const [feeInfo, setFeeInfo] = useState<string>('');
+    const [filterRegionMain, setFilterRegionMain] = useState<string>('');
+    const [filterRegionSub, setFilterRegionSub] = useState<string>('');
+    const [filterParkingCategory, setFilterParkingCategory] = useState<string>('');
+    const [filterParkingType, setFilterParkingType] = useState<string>('');
+    const [filterFeeInfo, setFilterFeeInfo] = useState<string>('');
+    
     const [numOfRows, setNumOfRows] = useState<number>(10);
     const [totalCount, setTotalCount] = useState<number>(0);
-
     const pageNo = useRef<number>(1);
 
     // select ref
-    const regionMainRef = React.useRef<HTMLSelectElement | null>(null);
-    const regionSubRef = React.useRef<HTMLSelectElement | null>(null);
-    const parkingCategoryRef = React.useRef<HTMLSelectElement | null>(null);
-    const parkingTypeRef = React.useRef<HTMLSelectElement | null>(null);
-    const feeInfoRef = React.useRef<HTMLSelectElement | null>(null);
+    const selectRegionMainRef = useRef<HTMLSelectElement | null>(null);
+    const selectRegionSubRef = useRef<HTMLSelectElement | null>(null);
+    const selectParkingCategoryRef = useRef<HTMLSelectElement | null>(null);
+    const selectParkingTypeRef = useRef<HTMLSelectElement | null>(null);
+    const selectFeeInfoRef = useRef<HTMLSelectElement | null>(null);
 
     const fetchData = async () => {
         const params = {
-            'region': regionMain,
-            'regionSub': regionSub,
-            'category': parkingCategory,
-            'type': parkingType,
-            'feeInfo': feeInfo,
-            'page': String(pageNo.current - 1),
+            'region': filterRegionMain,
+            'regionSub': filterRegionSub,
+            'category': filterParkingCategory,
+            'type': filterParkingType,
+            'feeInfo': filterFeeInfo,
+            'page': String(pageNo.current),
             'size': String(numOfRows)
         }
 
@@ -71,13 +72,19 @@ export default function BoardPage() {
             return;
         }
 
-        const data = await res.json();
+        
+        if(isModal) {
+            modalRouter.replace('/board?' + queryString);
+        } else {
+            window.history.replaceState(null, '', '?' + queryString);
+        }
 
+        const data = await res.json();
 
         setParkingList(data.content);
         setTotalCount(data.totalElements);
 
-        console.log(data);
+        //console.log(data);
     }
 
     const fetchRegion = async (region?: string) => {
@@ -94,6 +101,7 @@ export default function BoardPage() {
             setRegionSubList(data);
         } else {
             setRegionMainList(data);
+            setFilterLoaded(true);
         }
     }
 
@@ -119,69 +127,92 @@ export default function BoardPage() {
     }
 
     useEffect(() => {
+        if(!filterLoaded) {
+            return;
+        }
+
         pageNo.current = 1;
         fetchData();
-    }, [regionMain, regionSub, parkingCategory, parkingType, feeInfo])
+    }, [filterRegionMain, filterRegionSub, filterParkingCategory, filterParkingType, filterFeeInfo])
 
-    useEffect(()=>{
-        setRegionMainList([]);
-        fetchRegion();
-    }, []);
+    useEffect(() => {
+        if(!filterLoaded) {
+            return;
+        }
+
+        fetchData();
+    }, [filterLoaded])
 
     useEffect(()=>{
         setRegionSubList([]);
-        if(regionMain) {
-            fetchRegion(regionMain);
-        } else {
-            
+        if(filterRegionMain) {
+            fetchRegion(filterRegionMain);
         }
-    }, [regionMain]);
+    }, [filterRegionMain]);
+
+    useEffect(()=>{
+        const filters = new URLSearchParams(location.search);
+
+        setFilterRegionMain(filters.get('region') || '');
+        setFilterRegionSub(filters.get('regionSub') || '');
+        setFilterParkingCategory(filters.get('category') || '');
+        setFilterParkingType(filters.get('type') || '');
+        setFilterFeeInfo(filters.get('feeInfo') || '');
+        pageNo.current = parseInt(filters.get('page') || '1');
+        setNumOfRows(parseInt(filters.get('size') || '10'));
+
+        //setRegionMainList([]);
+        fetchRegion();
+    }, []);
 
     return (
         <>
             <div className="p-5 grid grid-cols-5 space-x-5 bg-sky-50 rounded-lg">
-                <TailSelect ref={regionMainRef}
+                <TailSelect ref={selectRegionMainRef}
                     opk={prependAllToList('', regionMainList)}
                     opv={prependAllToList(':: 전국 ::', regionMainList)}
                     title="지역구분"
-                    value={regionMain}
-                    setValue={setRegionMain} />
+                    value={filterRegionMain}
+                    setValue={setFilterRegionMain} />
 
-                <TailSelect ref={regionSubRef}
+                <TailSelect ref={selectRegionSubRef}
                     opk={prependAllToList('', regionSubList)}
                     opv={prependAllToList(':: 전체 ::', regionSubList)}
                     title="지역상세"
-                    value={regionSub}
-                    setValue={setRegionSub}
+                    value={filterRegionSub}
+                    setValue={setFilterRegionSub}
                     disabled={regionSubList.length == 0}
                      />
 
-                <TailSelect ref={parkingCategoryRef}
+                <TailSelect ref={selectParkingCategoryRef}
                     opk={prependAllToList('', parkingCategoryList)}
                     opv={prependAllToList(':: 전체 ::', parkingCategoryList)}
                     title="주차장구분"
-                    value={parkingCategory}
-                    setValue={setParkingCategory} />
+                    value={filterParkingCategory}
+                    setValue={setFilterParkingCategory} />
 
-                <TailSelect ref={parkingTypeRef}
+                <TailSelect ref={selectParkingTypeRef}
                     opk={prependAllToList('', parkingTypeList)}
                     opv={prependAllToList(':: 전체 ::', parkingTypeList)}
                     title="주차장유형"
-                    value={parkingType}
-                    setValue={setParkingType} />
+                    value={filterParkingType}
+                    setValue={setFilterParkingType} />
 
-                <TailSelect ref={feeInfoRef}
+                <TailSelect ref={selectFeeInfoRef}
                     opk={prependAllToList('', feeInfoList)}
                     opv={prependAllToList(':: 전체 ::', feeInfoList)}
                     title="요금정보"
-                    value={feeInfo}
-                    setValue={setFeeInfo} />
+                    value={filterFeeInfo}
+                    setValue={setFilterFeeInfo} />
             </div>
             {
+                parkingList === null ?
+                <div className="text-xl font-bold text-center bg-sky-50 mt-2 p-5 rounded">조회중입니다...</div>
+                :
                 parkingList.length > 0 ?
                 <>
                     <TailTable className={`mt-3`} headers={headers} data={parkingList}
-                        theadClassName="bg-sky-600 border-sky-400"
+                        theadClassName="bg-sky-500 border-sky-400"
                         trClassName="bg-sky-100 border-sky-200 hover:bg-sky-200 text-sky-900"
                         firstTdClassName="text-sky-900"
                         onTrClick={onTrClick}
@@ -189,7 +220,7 @@ export default function BoardPage() {
                     <Pagination totalCount={totalCount} numOfRows={numOfRows} pageNo={pageNo.current} changePage={changePage} className="m-5" currClassName="bg-sky-200" liClassName="bg-sky-50" />
                 </>
                 :
-                <div className="text-xl font-bold text-center bg-sky-50 mt-2 p-5 rounded">조회된 항목이 없습니다.</div>
+                <div className="text-xl font-bold text-center bg-sky-600 text-white mt-2 p-5 rounded">조회된 항목이 없습니다.</div>
             }
         </>
     );

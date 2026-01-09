@@ -8,15 +8,15 @@ import { FaGoogle } from "react-icons/fa";
 import { useAtom } from "jotai";
 import { User } from "@/types/user";
 import { loginUserAtom } from "@/atoms/atom";
-import { useRouter } from 'next/navigation';
-import { useIsModal } from "@/utils/ModalUtil";
+import { useIsModal, useModalRouter } from "@/utils/ModalUtil";
 import { fetchAPI } from "@/utils/fetchAPI";
 import { logout } from "./UserInfo";
 
 export default function LoginPage() {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-    const router = useRouter();
+    const {router, push} = useModalRouter();
+
 
     const isModal = useIsModal();
 
@@ -57,11 +57,19 @@ export default function LoginPage() {
                 return;
             }
                 
-            alert("로그인 실패!");
+            alert("ID 혹은 비밀번호가 맞지 않습니다.");
         } catch (error) {
             console.error("로그인 오류!", error);
         }
     };
+
+    const registerButton = () => {
+        if(isModal) {
+            push('/register');
+        } else {
+            window.location.href = '/register';
+        }
+    }
 
     const logoutAction = async () => {
         await logout(setLoginUser);
@@ -118,9 +126,14 @@ export default function LoginPage() {
                         <label htmlFor="password">비밀번호</label>
                         <input ref={passwordRef} className="border border-sky-700 p-1 rounded bg-white" type="password" id="password" placeholder="비밀번호를 입력하세요" onKeyUp={(e)=>{e.key === 'Enter' && loginButton()}} />
                     </div>
-                    <button type="button" className="mt-2 bg-sky-600 px-3 py-2 text-white rounded-md hover:bg-sky-700 cursor-pointer" onClick={loginButton}>
-                        로그인
-                    </button>
+                    <div className="flex justify-between w-7/10">
+                        <button type="button" className="mt-2 bg-sky-400 px-3 py-2 text-white rounded-md hover:bg-sky-500 cursor-pointer w-25 text-center" onClick={registerButton}>
+                            회원가입
+                        </button>
+                        <button type="button" className="mt-2 bg-sky-500 px-3 py-2 text-white rounded-md hover:bg-sky-600 cursor-pointer w-25" onClick={loginButton}>
+                            로그인
+                        </button>
+                    </div>
                     <div className="text-sm m-2 border-t border-gray-300 w-full text-center mt-5 pt-3">
                         <span>또는</span>
                     </div>

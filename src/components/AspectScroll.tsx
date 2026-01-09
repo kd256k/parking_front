@@ -45,7 +45,7 @@ export default function AspectScroll({
   return (
     <div 
       ref={containerRef}
-      className={`w-full overflow-y-auto relative ${className}`}
+      className={`w-full overflow-y-auto relative ${className} floating-scroll`}
       style={{ 
         // 여기가 핵심: 높이는 자동이지만, 최대 높이는 비율제한을 따름
         maxHeight: maxHeight ? `${maxHeight}px` : undefined 

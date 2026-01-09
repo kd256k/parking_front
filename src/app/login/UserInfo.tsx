@@ -27,12 +27,12 @@ export default function UserInfo() {
         <>
             {
                 loginUser ?
-                    <div className="grid grid-cols-[70%_30%] border-b border-gray-200">
+                    <div className="grid grid-cols-[80%_20%] border-b border-sky-200">
                         <Link className="flex justify-start items-center hover:bg-sky-200 p-2" href="/member/myinfo">
                             <FaUserCircle className="text-sky-300" size={30} />
-                            <div className="font-bold pl-1 pt-0.5">{loginUser.name}</div>
+                            <div className="font-bold pl-1 pt-0.5 truncate">{loginUser.name}</div>
                         </Link>
-                        <div onClick={() => logout(setLoginUser)} className="flex justify-end items-center p-2 pr-3 text-lg hover:bg-sky-200 cursor-pointer" title="로그아웃"><HiOutlineLogout /></div>
+                        <div onClick={() => logout(setLoginUser)} className="items-center p-2 pr-3 text-lg hover:bg-sky-200 cursor-pointer flex justify-center" title="로그아웃"><HiOutlineLogout /></div>
                     </div>
                     :
                     <Link href="/login" className="text-lg hover:bg-sky-200 px-3 py-2 cursor-pointer flex justify-start items-center">
