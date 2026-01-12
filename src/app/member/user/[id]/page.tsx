@@ -31,7 +31,7 @@ export default function MemberUserDetailPage({ params }: { params: Promise<{ id:
             const item: Member = await fetchData(id);
             setItem(item);
 
-            console.log(item);
+            //console.log(item);
 
 
             let realId = item.id, provider = '';
@@ -147,8 +147,8 @@ export default function MemberUserDetailPage({ params }: { params: Promise<{ id:
                             <input ref={inputEnabledRef} type="checkbox" className={`w-6 h-6 bg-white border border-sky-300 rounded focus:ring-sky-500 focus:border-sky-500 block p-2.5`} />
                         </div>
 
-                        <div className="w-full text-right font-bold text-lg text-sky-700"> 비밀번호 초기화 </div>
-                        <div className="w-full">
+                        <div className={`${provider && 'hidden'} w-full text-right font-bold text-lg text-sky-700`}> 비밀번호 초기화 </div>
+                        <div className={`${provider && 'hidden'} w-full`}>
                             <input ref={inputPasswordRef} type="password" className={`bg-white border border-sky-300 text-sm rounded focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5`} placeholder="초기화 하려면 입력" />
                         </div>
 

@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import MemberPage from "@/app/member/page";
 import Modal from "@/components/Modal";
 

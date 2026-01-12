@@ -117,13 +117,13 @@ export default function LoginPage() {
                 </>
                 :
                 <>
-                    <div className="text-3xl font-bold mb-4">로그인</div>
+                    <div className="text-3xl font-bold mb-4 text-sky-700">로그인</div>
                     <div className="grid grid-cols-[30%_70%] items-center justify-center mx-10 mb-4 w-80">
-                        <label htmlFor="username">아이디</label>
+                        <label htmlFor="username" className="w-full text-right font-bold text-lg text-sky-700 pr-5">아이디</label>
                         <input ref={idRef} className="border border-sky-700 p-1 rounded bg-white" type="text" id="username" placeholder="아이디를 입력하세요" />
                     </div>
                     <div className="grid grid-cols-[30%_70%] items-center justify-center mx-10 mb-4 w-80">
-                        <label htmlFor="password">비밀번호</label>
+                        <label htmlFor="password" className="w-full text-right font-bold text-lg text-sky-700 pr-5">비밀번호</label>
                         <input ref={passwordRef} className="border border-sky-700 p-1 rounded bg-white" type="password" id="password" placeholder="비밀번호를 입력하세요" onKeyUp={(e)=>{e.key === 'Enter' && loginButton()}} />
                     </div>
                     <div className="flex justify-between w-7/10">

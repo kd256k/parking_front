@@ -6,16 +6,18 @@ import { useRouter } from 'next/navigation';
 import { useAtom } from 'jotai';
 import { User } from '@/types/user';
 import { loginUserAtom } from '@/atoms/atom';
-import { validatePassword } from '@/utils/PasswordValidator';
+import { validatePassword } from '@/utils/StringValidator';
 
 
-function HiddenDiv({ isShow, children }: { isShow: boolean, children: React.ReactNode }) {
+function HiddenDiv({ isShow, children, className='' }: { isShow: boolean, children: React.ReactNode, className?: string }) {
     return (
-        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isShow ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'}`}>{children}</div>
+        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isShow ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'} ${className}`}>{children}</div>
     )
 }
 
 export default function MyInfoPage() {
+    const [realId, setRealId] = useState<string>('');
+    const [provider, setProvider] = useState<string>('');
     const [item, setItem] = useState<any>(null);
     const router = useRouter();
     const [loginUser, setLoginUser] = useAtom<User | null>(loginUserAtom);
@@ -57,7 +59,7 @@ export default function MyInfoPage() {
             return;
         }
 
-        if (!orgPassword) {
+        if (!provider && !orgPassword) {
             alert('현재 비밀번호를 입력하세요.');
             return;
         }
@@ -111,7 +113,18 @@ export default function MyInfoPage() {
 
     useEffect(() => {
         (async () => {
-            setItem(await fetchData());
+            const item = await fetchData();
+            setItem(item);
+            
+            let realId = item.id, provider = '';
+            if (item.id.indexOf('|') > -1) {
+                const tmp = item.id.split('|');
+                realId = tmp[1];
+                provider = tmp[0].toUpperCase();
+            }
+
+            setRealId(realId);
+            setProvider(provider);
         })();
     }, []);
 
@@ -128,23 +141,31 @@ export default function MyInfoPage() {
     return (
         <div className="flex mx-auto flex-col justify-center items-center rounded-xl w-120 m-10 p-10 bg-sky-50">
             <form onSubmit={handleSubmit} className="w-full grid grid-cols-[40%_60%] justify-center items-center gap-y-2 text-lg">
-                <div className="text-center text-3xl font-bold col-span-2 mb-4">사용자 정보</div>
+                <div className="text-center text-3xl font-bold col-span-2 mb-4 text-sky-700">사용자 정보</div>
 
-                <div>ID</div>
-                <div>{item.id}</div>
+                <div className="w-full text-right font-bold text-lg text-sky-700 pr-5">ID</div>
+                <div className=""> {realId} </div>
 
-                <div className="mt-2">사용자명</div>
-                <div className="mt-2"><input type="text" name="name" defaultValue={item.name} className="p-1 border border-sky-600 bg-white rounded-md" /></div>
+                {
+                    provider && <>
+                        <div className="w-full text-right font-bold text-lg text-sky-700 pr-5"> SNS </div>
+                        <div className=""> {provider} </div>
+                    </>
+                }
 
-                <div>현재 비밀번호</div>
+                <div className="w-full text-right font-bold text-lg text-sky-700 pr-5">사용자명</div>
+                <div className=""><input type="text" name="name" defaultValue={item.name} className="p-1 border border-sky-600 bg-white rounded-md" /></div>
+
+                { !provider && <>
+                <div className="w-full text-right font-bold text-lg text-sky-700 pr-5">현재 비밀번호</div>
                 <div><input type="password" name="orgPassword" placeholder='현재 비밀번호 입력' className="p-1 border border-sky-600 bg-white rounded-md" /></div>
 
-                <div>새 비밀번호</div>
+                <div className="w-full text-right font-bold text-lg text-sky-700 pr-5">새 비밀번호</div>
                 <div><input onChange={onPasswordChange} type="password" name="password" placeholder='변경하려면 비밀번호 입력' className="p-1 border border-sky-600 bg-white rounded-md" /></div>
 
-                <HiddenDiv isShow={changePassword}>새 비밀번호 확인</HiddenDiv>
+                <HiddenDiv isShow={changePassword} className="w-full text-right font-bold text-lg text-sky-700 pr-5">새 비밀번호 확인</HiddenDiv>
                 <HiddenDiv isShow={changePassword}><input type="password" name="password2" placeholder='비밀번호 확인 입력' className="p-1 border border-sky-600 bg-white rounded-md" /></HiddenDiv>
-
+                </>}
                 <div className="col-span-2 text-center mt-3">
                     <button type="submit" className="mt-2 bg-sky-400 px-3 py-2 text-white rounded-md hover:bg-sky-500 cursor-pointer">정보 수정</button>
                 </div>
