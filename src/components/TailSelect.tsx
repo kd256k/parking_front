@@ -5,8 +5,8 @@ interface TailSelectProps {
   opk: string[];
   opv: string[];
   title?: string;
-  value: string;
-  setValue: React.Dispatch<React.SetStateAction<string>>;
+  value?: string;
+  setValue?: React.Dispatch<React.SetStateAction<string>>;
   disabled?: boolean;
 }
 
@@ -14,7 +14,9 @@ export default function TailSelect({ ref, opk, opv, title = "", value, setValue,
   //ref 사용 전 선언
 
   const onHandle = (e: ChangeEvent<HTMLSelectElement>) => {
-    setValue(e.currentTarget.value);
+    if(setValue) {
+      setValue(e.currentTarget.value);
+    }
   }
 
   return (
@@ -28,9 +30,8 @@ export default function TailSelect({ ref, opk, opv, title = "", value, setValue,
       <select ref={ref}
         onChange={onHandle}
         value={value}
-        className={`bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-                    dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
-                    ${disabled ? 'text-gray-400' : 'text-gray-900'}`}
+        className={`bg-white border text-sm rounded focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5
+                    ${disabled ? 'text-gray-400 border-gray-300' : 'text-sky-900 border-sky-300'}`}
         disabled={disabled} >
         {/* <option value="">--{title}을 선택하세요.--</option> */}
 

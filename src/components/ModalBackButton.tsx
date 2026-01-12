@@ -3,10 +3,10 @@
 import { useRouter } from 'next/navigation';
 import { useModalRouter } from '@/utils/ModalUtil';
 
-export default function BackButton({ children, className }: { children: React.ReactNode, className: string }) {
+export default function ModalBackButton({ children, className }: { children: React.ReactNode, className: string }) {
     const router = useRouter();
 
-    const { push, close, currentDepth } = useModalRouter();
+    const { currentDepth } = useModalRouter();
 
     return (
         currentDepth > 1 ?

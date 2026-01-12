@@ -6,6 +6,7 @@ import { ko } from 'date-fns/locale'; // 한국어 설정
 import { User } from '@/types/user';
 import { useAtom } from 'jotai';
 import { loginUserAtom } from '@/atoms/atom';
+import StarRating from './StarRating';
 
 export default function CommentBlock({ data, onEdit, onDelete }: { data: Comment, onEdit: (data: Comment) => void, onDelete: (data: Comment) => void }) {
     const [isEditing, setIsEditing] = useState(false);
@@ -49,7 +50,7 @@ export default function CommentBlock({ data, onEdit, onDelete }: { data: Comment
     };
 
     return (
-        <div className="group min-w-150 w-2/3  bg-white p-6 border-b border-gray-100 transition-all hover:bg-gray-50 mt-2 rounded-xl shadow-xl">
+        <div className="group min-w-150 w-4/5 bg-white p-6 border-b border-gray-100 transition-all hover:bg-gray-50 mt-2 rounded-xl shadow-xl">
             {/* 상단 레이아웃: 작성자 정보와 관리 버튼 */}
             <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
@@ -59,14 +60,7 @@ export default function CommentBlock({ data, onEdit, onDelete }: { data: Comment
 
                         {/* 별점 영역: 수정 모드일 때 클릭 가능 */}
                         <div className={`flex text-amber-400 mt-0.5 ${isEditing && "border border-sky-300 rounded p-1"}`}>
-                            {[...Array(5)].map((_, i) => (
-                                <FaStar
-                                    key={i}
-                                    size={16}
-                                    className={`cursor-pointer ${i < (isEditing ? editRating : data.rate) ? "fill-current" : "text-gray-200"}`}
-                                    onClick={() => isEditing && setEditRating(i + 1)}
-                                />
-                            ))}
+                            <StarRating size={16} initialRating={isEditing ? editRating : data.rate} readOnly={!isEditing} onRate={(score) => setEditRating(score)} />
                         </div>
                     </div>
                 </div>

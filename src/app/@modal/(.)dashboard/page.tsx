@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import Modal from '@/components/Modal';
 import DashboardPage from '@/app/dashboard/page';
 import AutoFitScale from "@/components/AutoFitScale";

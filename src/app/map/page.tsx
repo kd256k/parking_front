@@ -1,7 +1,7 @@
 'use client';
 
 import { Map, useKakaoLoader } from 'react-kakao-maps-sdk';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { fetchAPI } from '@/utils/fetchAPI';
 import { Parking, ParkingCluster, ParkingGroup } from '@/types/parking';
 
@@ -13,9 +13,16 @@ import { ClusterMarker, GroupParkingMarker, SingleParkingMarker } from './Custom
 import MyLocationMarker from './MyLocationMarker';
 import { useModalEvents, useModalRouter } from '@/utils/ModalUtil';
 import ParkingGroupList from './ParkingGroupList';
+import { useAtom } from 'jotai';
+import { showGuideAtom } from '@/atoms/atom';
+import Guide from './Guide';
 
 
 export default function Page() {
+
+    const [mounted, setMounted] = useState(false);
+
+    const [showGuide, _] = useAtom<boolean | null>(showGuideAtom);
 
     const [mapObj, setMapObj] = useState<kakao.maps.Map | null>(null);
 
@@ -44,7 +51,7 @@ export default function Page() {
     const [parkingType, setParkingType] = useState<string>('');
     const [feeInfo, setFeeInfo] = useState<string>('');
 
-    const { push, close, currentDepth } = useModalRouter();
+    const { push: modalPush } = useModalRouter();
 
     const { setModalEventHandlers } = useModalEvents()
 
@@ -81,13 +88,20 @@ export default function Page() {
         if (!mapObj) return;
 
         reloadList();
-    }, [mapObj, parkingCategory, parkingType, feeInfo])
+    }, [mapObj, parkingCategory, parkingType, feeInfo, center, level])
 
     useEffect(() => {
         if (selectedParking != null) {
-            push(`/board/${selectedParking.parkingId}`, 1);
+            modalPush(`/board/${selectedParking.parkingId}`, 1);
         }
     }, [selectedParking]);
+
+    useEffect(()=>{
+        setMounted(true);
+    },[])
+
+    if(!mounted) return;
+
 
     const reloadList = async () => {
         if (!mapObj) return;
@@ -139,19 +153,17 @@ export default function Page() {
     const onMapDragEnd = (map: kakao.maps.Map) => {
         const center = map.getCenter();
         setCenter({ lat: center.getLat(), lng: center.getLng() });
-
-        reloadList();
     }
 
     const onMapZoomChanged = (map: kakao.maps.Map) => {
         const level = map.getLevel();
         setLevel(level);
-
-        reloadList();
     }
+
 
     return (
         <>
+            {showGuide && <Guide />}
             <main className="relative w-screen h-screen overflow-hidden bg-gray-100">
                 {/* ======================= */}
                 {/* 지도 영역 (배경)     */}
@@ -208,7 +220,7 @@ export default function Page() {
                                 }
 
                                 {myLocation && <MyLocationMarker position={myLocation} />}
-                                {selectedParkingGroup && <ParkingGroupList selectedParkingGroup={selectedParkingGroup} setSelectedParking={setSelectedParking} setMainOpen={setMainOpen}/>}
+                                {selectedParkingGroup && <ParkingGroupList selectedParkingGroup={selectedParkingGroup} setSelectedParking={setSelectedParking} setSelectedParkingGroup={setSelectedParkingGroup} setMainOpen={setMainOpen}/>}
 
                             </Map>
                         )

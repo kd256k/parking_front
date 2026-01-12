@@ -10,6 +10,7 @@ import { User } from '@/types/user';
 import { loginUserAtom } from '@/atoms/atom';
 import Link from 'next/link';
 import StarRating from './StarRating';
+import { useModalRouter } from '@/utils/ModalUtil';
 
 export default function CommentArea({ parkingId }: { parkingId: string }) {
 
@@ -21,6 +22,7 @@ export default function CommentArea({ parkingId }: { parkingId: string }) {
 
     const [rate, setRate] = useState<number>(5);
 
+    const { router } =useModalRouter();
 
     const fetchComment = async () => {
         const res = await fetchAPI(`/comment/${parkingId}`);
@@ -54,7 +56,7 @@ export default function CommentArea({ parkingId }: { parkingId: string }) {
         });
 
         if (!res.ok) {
-            alert("댓글 작성에 실패했습니다.\n잠시 후 다시 시도해 주십시오.");
+            alert("리뷰 작성에 실패했습니다.\n잠시 후 다시 시도해 주십시오.");
             return;
         }
 
@@ -70,7 +72,7 @@ export default function CommentArea({ parkingId }: { parkingId: string }) {
         });
 
         if (!res.ok) {
-            alert("댓글 수정에 실패했습니다.\n잠시 후 다시 시도해 주십시오.");
+            alert("리뷰 수정에 실패했습니다.\n잠시 후 다시 시도해 주십시오.");
             return;
         }
 
@@ -80,7 +82,7 @@ export default function CommentArea({ parkingId }: { parkingId: string }) {
     }
 
     const onCommentDeleteClick = async (data: Comment) => {
-        if (!confirm('삭제하시겠습니까?\n\n(삭제된 댓글은 복구할 수 없습니다.)')) {
+        if (!confirm('삭제하시겠습니까?\n\n(삭제된 리뷰는 복구할 수 없습니다.)')) {
             return;
         }
 
@@ -89,7 +91,7 @@ export default function CommentArea({ parkingId }: { parkingId: string }) {
         });
 
         if (!res.ok) {
-            alert("댓글 삭제에 실패했습니다.\n잠시 후 다시 시도해 주십시오.");
+            alert("리뷰 삭제에 실패했습니다.\n잠시 후 다시 시도해 주십시오.");
             return;
         }
 
@@ -100,20 +102,24 @@ export default function CommentArea({ parkingId }: { parkingId: string }) {
         fetchComment();
     }, []);
 
+    useEffect(()=>{
+        router.refresh();
+    }, [commentList]);
+
     return (
         <div className='flex flex-col mx-auto'>
             {
                 commentList.length === 0 && <div className='text-center font-bold text-sky-700 mb-4'>이 주차장에 리뷰가 없습니다.<br/>첫 리뷰를 남겨보세요.</div>
             }
-            <div className="text-center bg-white mx-auto p-5 rounded-xl shadow-xl">
+            <div className="min-w-150 w-4/5 text-center bg-white mx-auto p-5 rounded-xl shadow-xl">
                 {
                     loginUser ?
-                        <div className="min-w-150 w-2/3 flex flex-col">
-                            <textarea ref={textareaRef} className='min-w-90 p-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none text-lg text-gray-700 leading-relaxed' placeholder='댓글을 입력하세요.'></textarea>
+                        <div className="flex flex-col">
+                            <textarea ref={textareaRef} className='min-w-90 p-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none text-lg text-gray-700 leading-relaxed' placeholder='리뷰를 입력하세요.'></textarea>
                             <div className="flex justify-between items-center mt-4">
                                 <div className="flex items-center">
                                     <span className="font-bold mr-3">별점 : </span>
-                                    <StarRating totalStars={5} onRate={(score) => setRate(score)} />
+                                    <StarRating onRate={(score) => setRate(score)} />
                                 </div>
                                 <div>
                                     <button className='bg-sky-400 rounded text-white px-3 py-1' onClick={postComment}>등록</button>

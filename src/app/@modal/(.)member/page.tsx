@@ -1,13 +1,13 @@
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+import MemberPage from "@/app/member/page";
 import Modal from "@/components/Modal";
-import LoginPage from "@/app/login/page";
 
 export default function Page() {
     return (
-        <Modal containerClassName=''>
-            <LoginPage />
+        <Modal containerClassName="w-full max-w-[85%] px-4">
+            <MemberPage />
         </Modal>
     );
 }
