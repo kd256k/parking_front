@@ -3,6 +3,7 @@
 import { showGuideAtom } from '@/atoms/atom';
 import { useAtom } from 'jotai';
 import { useState } from 'react';
+import { FiArrowDownRight } from "react-icons/fi";
 
 export default function Guide({}) {
     const [ _, setShowGuide] = useAtom<boolean>(showGuideAtom);
@@ -40,7 +41,10 @@ export default function Guide({}) {
                         영역4
                     </div>
                     <div className="h-1/2 bg-yellow-500/50">
-                        영역5
+                        <div className='pr-20 pb-20 h-full flex flex-col justify-end items-end'>
+                            <div className="pr-10 text-2xl font-bold">자기 위치 찾기</div>
+                            <FiArrowDownRight className="text-4xl"/>
+                        </div>
                     </div>
                 </div>
             </div>
