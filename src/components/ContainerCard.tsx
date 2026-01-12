@@ -1,34 +1,25 @@
-import { LucideIcon } from "lucide-react";
-import { IconType } from "@/types/icon";
-import { ICON_CONFIG } from "@/types/icon";
-
 interface ContainerCardProps {
     caption: string;
     item: number;
-    iconType?: IconType;
     size?: number;
 }
 
-export default function ContainerCard({ item, caption, iconType = 'Building2', }: ContainerCardProps) {
-
-    const config = ICON_CONFIG[iconType];
-
-    const IconComponent = config.Icon;
-    const colorClass = config.iconColor;
-    const bgClass = config.bgColor;
+export default function ContainerCard({ item, caption, }: ContainerCardProps) {
 
     const formattedValue = Number(item.toFixed(0),).toLocaleString();
     const unit = caption.toString().includes("비율") ? "%" : caption.toString().includes("평균") ? "개" : "개소";
     return (
-        <div className="w-full h-40 p-4 shadow-xl bg-white text-lg rounded-2xl overflow-hidden ">
-            <div className="bg-sky-100 h-8 mb-2"></div>
-            
-                <div className="p-2 rounded-full inline-flex" style={{ backgroundColor: bgClass }}>
-                    <IconComponent size={16} className={colorClass} />
+        <div className="w-full h-40 shadow-lg bg-white text-lg rounded-2xl overflow-hidden ">
+            <div className="h-1/2 bg-sky-500 text-white flex justify-center items-center text-2xl font-bold">
+                {caption}
+            </div>
+            <div className="h-1/2 flex justify-center items-center text-3xl font-bold">
+                <div className="flex items-baseline">
+                    <span>{formattedValue}</span>
+                    <span className="text-2xl ml-2">{unit}</span>
                 </div>
-                <div className="text-neutral-700 font-medium">{caption}</div>
-                <div className="text-neutral-700 font-light">{formattedValue}{unit}</div>
+            </div>
         </div>
-           
+
     );
 }

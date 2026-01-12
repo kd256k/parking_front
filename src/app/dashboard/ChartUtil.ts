@@ -5,17 +5,19 @@ export const createBarChartOption = (items: ChartDataItem[]): ChartOption => {
 
     return {
         series: [{
-            name: 'Inflation',
+            name: '주차장수',
             data: items.map(item => item.count)
         }],
         options: {
             chart: {
-                height: 350,
                 type: 'bar',
+                toolbar: {
+                    show: false
+                }
             },
             plotOptions: {
                 bar: {
-                    borderRadius: 0,
+                    borderRadius: 3,
                     dataLabels: {
                         position: 'top', // top, center, bottom
                     },
@@ -24,11 +26,11 @@ export const createBarChartOption = (items: ChartDataItem[]): ChartOption => {
             dataLabels: {
                 enabled: true,
                 formatter: function (val: any) {
-                    return val + "";
+                    return Number(val.toFixed(0),).toLocaleString() + "";
                 },
                 offsetY: -20,
                 style: {
-                    fontSize: '12px',
+                    fontSize: '14px',
                     colors: ["#304758"]
                 }
             },
@@ -42,20 +44,13 @@ export const createBarChartOption = (items: ChartDataItem[]): ChartOption => {
                 axisTicks: {
                     show: false
                 },
-                crosshairs: {
-                    fill: {
-                        type: 'gradient',
-                        gradient: {
-                            colorFrom: '#D8E3F0',
-                            colorTo: '#BED1E6',
-                            stops: [0, 100],
-                            opacityFrom: 0.4,
-                            opacityTo: 0.5,
-                        }
+                labels: {
+                    rotate: -45,
+                    rotateAlways: true,
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
                     }
-                },
-                tooltip: {
-                    enabled: true,
                 }
             },
             yaxis: {
@@ -66,22 +61,13 @@ export const createBarChartOption = (items: ChartDataItem[]): ChartOption => {
                     show: false,
                 },
                 labels: {
-                    show: false,
-                    formatter: function (val: any) {
-                        return val.toLocaleString() + "%";
-                    }
+                    show: true,
+                    style: {
+                        fontSize: '14px'
+                    },
                 }
 
             },
-            title: {
-                text: '',
-                floating: true,
-                offsetY: 330,
-                align: 'center',
-                style: {
-                    color: '#444'
-                }
-            }
         },
 
 
@@ -98,12 +84,34 @@ export const createPieChartOption = (items: PieChartDataItem): ChartOption => {
             animations: {
                 enabled: true,
                 speed: 600 // 처음 로딩 애니메이션 속도
-            }
+            },
         },
         labels: items.labels,
         dataLabels: {
-            enabled: true
-        }
+            enabled: true,
+            style: {
+                fontSize: '26px',
+                fontWeight: 'bold',
+                colors: ['#000'] // 텍스트 색상
+            },
+            dropShadow: {
+                enabled: true,
+                top: 2,
+                left: 2,
+                blur: 0,
+                opacity: 1,
+                color: '#fff'
+            }
+        },
+        legend: {
+            position: 'bottom',
+            fontSize: '20px', // 범례 글자 크기
+            fontWeight: 'bold',
+            offsetY: -10,
+            labels: {
+                colors: ['#333'] // 범례 텍스트 색상
+            }
+        },
     };
     return { series, options }
 }

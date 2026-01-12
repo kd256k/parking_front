@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { SimpleSouthKoreaMapChart } from 'react-simple-south-korea-map-chart';
 
 
@@ -7,7 +7,7 @@ export interface SouthKoreaMapChartProps {
     data: any;
     unit?: string;
     setColorByCount: (count: number) => string;
-    customTooltip?: (data: any) => React.ReactNode;
+    customTooltip?: JSX.Element;
     selectedRegion?: string;
     setSelectedRegion?: React.Dispatch<React.SetStateAction<string>>;
     diagonalSize?: number;
@@ -28,25 +28,25 @@ export default function SouthKoreaMapChart({
     customTooltip,
     selectedRegion = '',
     setSelectedRegion,
-    diagonalSize=5,
-    diagonalWidth=2,
-    diagonalColor='rgba(0,0,0,0.5)',
-    selectedColor='#ff6347',
-    selectedStrokeColor='black',
-    hoverColor='#fafa41',
-    hoverStrokeColor='black',
-    initialRegion='전국'
-} : SouthKoreaMapChartProps ) {
+    diagonalSize = 10,
+    diagonalWidth = 10,
+    diagonalColor = '#f54900',
+    selectedColor = '#ff8904',
+    selectedStrokeColor = 'black',
+    hoverColor = '#fafa41',
+    hoverStrokeColor = 'black',
+    initialRegion = '전국'
+}: SouthKoreaMapChartProps) {
 
     const handleWrapperClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if(!setSelectedRegion) return;
+        if (!setSelectedRegion) return;
 
         const target = e.target as SVGElement;
-        
+
         if (target.tagName === "path") {
             const locationName = target.getAttribute("name");
             if (locationName) {
-                if(locationName === selectedRegion) {
+                if (locationName === selectedRegion) {
                     setSelectedRegion(initialRegion);
                 } else {
                     setSelectedRegion(locationName);
@@ -54,7 +54,7 @@ export default function SouthKoreaMapChart({
             }
         }
     };
-    
+
     return (
         <div className="custom-map-style" onClick={handleWrapperClick}>
 
