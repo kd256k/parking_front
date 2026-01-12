@@ -26,6 +26,8 @@ export default function Page() {
   const [data, setData] = useState<ParkingDashboardResponse | null>();
   const [regionList, setRegionList] = useState<string[]>([]);
   const [selectedRegion, setSelectedRegion] = useState<string>("전국");
+  const [selectedRegionColor, setSelectedRegionColor] = useState<string>("");
+
 
   const [countByRegionOption, setCountByRegionOption] = useState<ChartOption>();
   const [countByCategoryOption, setCountByCategoryOption] = useState<ChartOption>();
@@ -34,6 +36,7 @@ export default function Page() {
 
   useEffect(() => {
     fetchData();
+
   }, [selectedRegion]);
 
 
@@ -83,6 +86,7 @@ export default function Page() {
       setCountByTypeOption(createPieChartOption(data.countByType));
       setCountByFeeInfoOption(createPieChartOption(data.countByFeeInfo));
 
+      setSelectedRegionColor(selectedRegion === '전국' ? '#fff' : setColorByCount(data.countAllByRegion.find(item => item.locale === selectedRegion)!.count));
     }
 
   }, [data]);
@@ -106,15 +110,17 @@ export default function Page() {
       "#dff2fe"  // 1번 (기본값 / 100 이하)
     ];
 
+    let color = colors[colors.length - 1];
+
     // thresholds 배열을 순회하며 조건에 맞는 인덱스를 찾습니다.
     for (let i = 0; i < thresholds.length; i++) {
       if (count > thresholds[i]) {
-        return colors[i];
+        color = colors[i];
+        break;
       }
     }
 
-    // 모든 조건에 해당하지 않을 경우 (가장 연한 색)
-    return colors[colors.length - 1];
+    return color;
   };
 
 
@@ -135,16 +141,26 @@ export default function Page() {
           <div className='w-full h-screen flex flex-col z-1 pt-50'>
             <div className='w-full flex justify-center text-center text-neutral-700 text-2xl text-font-bold rounded-xl'>
               {/* 지역별 분포 지도 */}
-              <TailSelect ref={regionSelectRef} opk={regionList} opv={regionList} value={selectedRegion} setValue={setSelectedRegion} className="absolute ml-80 scale-120 font-bold" />
+
               <div className="w-125 origin-top scale-120">
                 <SouthKoreaMapChart
                   setColorByCount={setColorByCount}
                   data={data.countAllByRegion}
                   selectedRegion={selectedRegion}
+                  selectedColor={selectedRegionColor}
+                  diagonalColor='rgba(0,0,0,0.5)'
                   setSelectedRegion={setSelectedRegion}
                   customTooltip={<CustomTooltip />}
                 />
               </div>
+              
+              <TailSelect ref={regionSelectRef}
+                opk={regionList}
+                opv={regionList}
+                value={selectedRegion}
+                setValue={setSelectedRegion}
+                className="absolute ml-80 scale-120 font-bold" />
+
             </div>
           </div>
           <div className='w-full h-full absolute top-0 left-0 flex flex-col justify-between p-5 z-10 pointer-events-none '>
