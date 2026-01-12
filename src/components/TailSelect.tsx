@@ -8,9 +8,10 @@ interface TailSelectProps {
   value?: string;
   setValue?: React.Dispatch<React.SetStateAction<string>>;
   disabled?: boolean;
+  className?: string;
 }
 
-export default function TailSelect({ ref, opk, opv, title = "", value, setValue, disabled=false }: TailSelectProps) {
+export default function TailSelect({ ref, opk, opv, title = "", value, setValue, disabled=false, className='' }: TailSelectProps) {
   //ref 사용 전 선언
 
   const onHandle = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -20,7 +21,7 @@ export default function TailSelect({ ref, opk, opv, title = "", value, setValue,
   }
 
   return (
-    <div>
+    <div className={className}>
       {title &&
         <label
           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
