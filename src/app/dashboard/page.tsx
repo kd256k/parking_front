@@ -47,8 +47,7 @@ export default function Page() {
     const res = await fetchAPI(`/parking/region`);
 
     if (!res.ok) {
-      console.error("data fetch Err");
-      alert("data fetch Err");
+      alert("대시보드 데이터 조회 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주십시오.");
       return;
     }
 
@@ -62,15 +61,14 @@ export default function Page() {
     const res = await fetchAPI(`/parking/dashboard${selectedRegion === '전국' ? '' : '?region=' + selectedRegion}`);
 
     if (!res.ok) {
-      console.error("data fetch Err");
-      alert("data fetch Err");
+      alert("대시보드 데이터 조회 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주십시오.");
       return;
     }
 
     const data = await res.json();
 
     setData(data);
-    console.log(data);
+    //console.log(data);
   }
 
   useEffect(() => {
@@ -150,10 +148,11 @@ export default function Page() {
                   selectedColor={selectedRegionColor}
                   diagonalColor='rgba(0,0,0,0.5)'
                   setSelectedRegion={setSelectedRegion}
+                  hoverColor='#0069a8'
                   customTooltip={<CustomTooltip />}
                 />
               </div>
-              
+
               <TailSelect ref={regionSelectRef}
                 opk={regionList}
                 opv={regionList}
