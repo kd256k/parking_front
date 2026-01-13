@@ -153,7 +153,7 @@ export default function MemberUserDetailPage({ params }: { params: Promise<{ id:
                         </div>
 
                         <div className="col-span-2 flex justify-end items-center">
-                            <button className='bg-sky-400 rounded text-white px-3 py-2' onClick={saveData}>저장</button>
+                            <button className='bg-sky-400 rounded text-white px-3 py-2 cursor-pointer' onClick={saveData}>저장</button>
                         </div>
                     </div>
 

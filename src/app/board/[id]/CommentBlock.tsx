@@ -69,19 +69,19 @@ export default function CommentBlock({ data, onEdit, onDelete }: { data: Comment
                 <div className="flex gap-1">
                     {isEditing ? (
                         <>
-                            <button onClick={handleSave} className="p-2 text-green-600 hover:bg-green-50 rounded-full" title="저장">
+                            <button onClick={handleSave} className="p-2 text-green-600 hover:bg-green-50 rounded-full cursor-pointer" title="저장">
                                 <FaSave size={18} />
                             </button>
-                            <button onClick={handleCancel} className="p-2 text-gray-400 hover:bg-gray-100 rounded-full" title="취소">
+                            <button onClick={handleCancel} className="p-2 text-gray-400 hover:bg-gray-100 rounded-full cursor-pointer" title="취소">
                                 <FaTimes size={18} />
                             </button>
                         </>
                     ) : isAuthor && (
                         <div className="flex opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button onClick={() => setIsEditing(true)} className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full">
+                            <button onClick={() => setIsEditing(true)} className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full cursor-pointer">
                                 <FaEdit size={18} />
                             </button>
-                            <button onClick={() => onDelete(data)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full">
+                            <button onClick={() => onDelete(data)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full cursor-pointer">
                                 <FaTrashAlt size={18} />
                             </button>
                         </div>

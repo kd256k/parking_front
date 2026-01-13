@@ -1,3 +1,6 @@
+import { Parking } from "./parking";
+import { Member } from "./user";
+
 export interface Comment {
     commentId : number;
     content : string;
@@ -6,4 +9,14 @@ export interface Comment {
     createdDate : string;
     rate : number;
     edited : boolean;
+}
+
+export interface CommentForManagement {
+    id : number;
+    content : string;
+    createdDate : string;
+    rate : number;
+    edited : boolean;
+    parking : Parking;
+    member : Member;
 }

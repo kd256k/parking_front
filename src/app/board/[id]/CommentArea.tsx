@@ -122,7 +122,7 @@ export default function CommentArea({ parkingId }: { parkingId: string }) {
                                     <StarRating onRate={(score) => setRate(score)} />
                                 </div>
                                 <div>
-                                    <button className='bg-sky-400 rounded text-white px-3 py-1' onClick={postComment}>등록</button>
+                                    <button className='bg-sky-400 rounded text-white px-3 py-1 cursor-pointer' onClick={postComment}>등록</button>
                                 </div>
                             </div>
                         </div>

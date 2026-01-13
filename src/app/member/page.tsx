@@ -8,7 +8,6 @@ import { TailTableHeader } from "@/types/tailtable";
 import { Member } from "@/types/user";
 import { fetchAPI } from "@/utils/fetchAPI";
 import { useIsModal, useModalRouter } from "@/utils/ModalUtil";
-import { filter } from "framer-motion/client";
 import { MouseEvent, useEffect, useRef, useState } from "react";
 
 
@@ -164,9 +163,10 @@ export default function MemberPage() {
                     </label>
                     <input type="text" ref={searchWordRef} onKeyDown={(e) => {
                         if (e.key === 'Enter') {
+                            pageNo.current = 1;
                             fetchData();
                         }
-                    }} className="w-full p-2.5 bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 "/>
+                    }} className="w-full p-2.5 bg-white border border-sky-300 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 "/>
                 </div>
             </div>
             {

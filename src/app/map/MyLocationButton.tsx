@@ -49,7 +49,7 @@ export default function MyLocationButton({
                 onClick={handleMyLocation}
                 disabled={isLoadingLocation}
                 className={`
-                            hidden md:flex absolute right-6 bottom-6 z-50 bg-sky-500 text-white p-3 rounded-full shadow-lg 
+                            hidden md:flex absolute right-6 bottom-6 z-50 bg-sky-500 text-white p-3 rounded-full shadow-lg cursor-pointer
                             hover:bg-sky-600 transition-colors
                             ${isLoadingLocation ? 'cursor-wait opacity-80' : ''}
                         `}

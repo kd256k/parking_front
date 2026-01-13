@@ -5,7 +5,7 @@ export interface TailTableHeader<T> {
     className?:string,
     cell?: (item: T, value:any) => JSX.Element | string
     hidden?:boolean,
-    name:string
+    name:JSX.Element | string
 }
 
 export interface TailTableProps<T> {

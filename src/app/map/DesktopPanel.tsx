@@ -83,7 +83,7 @@ export default function DesktopPanel({
                                 <button
                                     key={p.parkingId}
                                     onClick={() => setSelectedParking(p)}
-                                    className={`w-full text-left p-4 border-b border-sky-200 transition-colors hover:bg-sky-100 
+                                    className={`w-full text-left p-4 border-b border-sky-200 transition-colors hover:bg-sky-100 cursor-pointer
                                         ${selectedParking?.parkingId === p.parkingId ? 'bg-sky-200 ' : 'border-sky-50'}`}
                                 >
                                     <div className="font-bold text-gray-800">{p.parkingName}</div>
@@ -145,7 +145,7 @@ export default function DesktopPanel({
                         ${mainOpen ? selectedParking ? 'left-80' : 'left-80' : 'left-0'}
                     `}
                 >
-                    <button className={`font-bold text-sm bg-sky-400 py-5 px-1 rounded-r-md shadow-2xl text-white hover:bg-sky-500 pointer-events-auto`} onClick={() => setMainOpen(!mainOpen)}>
+                    <button className={`font-bold text-sm bg-sky-400 py-5 px-1 rounded-r-md shadow-2xl text-white hover:bg-sky-500 cursor-pointer pointer-events-auto`} onClick={() => setMainOpen(!mainOpen)}>
                         {mainOpen ? <IoIosArrowBack /> : <IoIosArrowForward />}
                     </button>
                 </div>
