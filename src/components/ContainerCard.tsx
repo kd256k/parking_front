@@ -13,7 +13,7 @@ export default function ContainerCard({ item, caption, }: ContainerCardProps) {
             <div className="h-1/2 bg-sky-500 text-white flex justify-center items-center text-2xl font-bold">
                 {caption}
             </div>
-            <div className="h-1/2 flex justify-center items-center text-3xl font-bold">
+            <div className="h-1/2 flex justify-center items-center text-neutral-700 text-3xl font-bold">
                 <div className="flex items-baseline">
                     <span>{formattedValue}</span>
                     <span className="text-2xl ml-2">{unit}</span>
