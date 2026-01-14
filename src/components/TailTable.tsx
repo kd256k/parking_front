@@ -13,7 +13,7 @@ export default function TailTable<T>({ className = '',
     } : TailTableProps<T> ) {
 
     return (
-        <div className={`overflow-x-auto shadow-md sm:rounded-lg ${className}`}>
+        <div className={`overflow-x-auto shadow-md sm:rounded-lg select-none ${className}`}>
             <table className="w-full text-left rtl:text-right text-blue-100 dark:text-blue-100">
                 <thead className={`text-white uppercase border-b ${theadClassName}`}>
                     <tr>

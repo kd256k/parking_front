@@ -32,26 +32,27 @@ function CommentCheckbox({ ref, onChange = () => { }, item, checked }: { ref?: R
 
 export default function CommentPage() {
 
-    const [mounted, setMounted] = useState(false);
+    const [mounted, setMounted] = useState(false); // 초기 로드 완료 여부
 
-    const [checkedIdList, setCheckedIdList] = useState<Set<number>>(new Set());
+    const [checkedIdList, setCheckedIdList] = useState<Set<number>>(new Set()); // 체크된 ID 셋
 
     const isModal = useIsModal();
 
     const { router: modalRouter } = useModalRouter();
 
-    const [commentList, setCommentList] = useState<CommentForManagement[] | null>(null);
+    const [commentList, setCommentList] = useState<CommentForManagement[] | null>(null); // 조회된 댓글 목록
 
     const [numOfRows, setNumOfRows] = useState<number>(10);
     const [totalCount, setTotalCount] = useState<number>(0);
     const pageNo = useRef<number>(1);
 
     // select/input ref
-    const searchTypeRef = useRef<HTMLSelectElement | null>(null);
-    const searchWordRef = useRef<HTMLInputElement | null>(null);
+    const searchTypeRef = useRef<HTMLSelectElement | null>(null);  // 검색 타입
+    const searchWordRef = useRef<HTMLInputElement | null>(null);   // 검색어
 
-    const [checkAll, setCheckAll] = useState(false);
+    const [checkAll, setCheckAll] = useState(false); // 전체 선택 체크 여부
 
+    // 개별 체크박스 선택 이벤트
     const onCheckBoxChange = (e: ChangeEvent<HTMLInputElement>, item?: CommentForManagement) => {
         if (!item) return;
         const checked = e.currentTarget.checked;
@@ -59,20 +60,22 @@ export default function CommentPage() {
         checkItem(item.id, checked);
     }
 
+    // 전체 선택 체크박스 선택 이벤트
     const onAllCheckBoxChange = (e: ChangeEvent<HTMLInputElement>) => {
 
-        const checked = e.currentTarget.checked;
-
-        setCheckAll(checked);
-
-        if (!checked) {
+        if(checkedIdList.size === (commentList ? commentList.length : 0)) {
+            // 전체 선택되어 있음 => 모두 선택 해제
             setCheckedIdList(new Set());
+            setCheckAll(false);
         } else {
+            // 그외 => 모두 선택
             setCheckedIdList(new Set(commentList!.map(item => item.id)));
+            setCheckAll(true);
         }
+
     }
 
-    /** TODO 필드 추가 및 가로 폭 조절 필요 */
+    /** TODO 필드 추가 및 가로 폭, 스타일 조절 필요 */
     const headers: TailTableHeader<CommentForManagement>[] = [
         {
             key: 'check',
@@ -95,6 +98,7 @@ export default function CommentPage() {
     ];
 
 
+    // 데이터 조회
     const fetchData = async () => {
         const params = {
             'searchType': String(searchTypeRef.current?.value),
@@ -113,6 +117,7 @@ export default function CommentPage() {
             return;
         }
 
+        // 뒤로가기로 돌아왔을 때 처리를 위한 querystring 변경
         if (isModal) {
             modalRouter.replace('/comment?' + queryString);
         } else {
@@ -127,11 +132,13 @@ export default function CommentPage() {
         console.log(data);
     }
 
+    // Pagination 페이지 변경 이벤트
     const changePage = (pageNo_: number) => {
         pageNo.current = pageNo_;
         fetchData();
     }
 
+    // item 선택 처리. checkedIdList에 항목 추가
     const checkItem = (id: number, checked: boolean) => {
         const alreadyChecked = checkedIdList.has(id);
 
@@ -142,12 +149,14 @@ export default function CommentPage() {
         }
     }
 
+    // 테이블 Row 클릭 이벤트
     const onTrClick = (e: MouseEvent<HTMLElement>, item: CommentForManagement) => {
         const checked = !checkedIdList.has(item.id);
 
         checkItem(item.id, checked);
     }
 
+    // 삭제 버튼 이벤트
     const deleteItems = async () => {
         /** TODO 삭제 API 호출 구현 필요 */
         
@@ -167,15 +176,18 @@ export default function CommentPage() {
         
     }
 
+    // 초기 로드
     useEffect(() => {
         setMounted(true);
     }, []);
 
+    // 초기 로드 이후 이벤트
     useEffect(() => {
         if (!searchTypeRef.current || !searchWordRef.current) {
             return;
         }
 
+        // querystring 조회 후 값 세팅
         const filters = new URLSearchParams(location.search);
 
         searchTypeRef.current!.value = filters.get('category') || 'CONTENT';
@@ -190,7 +202,10 @@ export default function CommentPage() {
 
     return (
         <>
-
+            <div className={`text-4xl font-bold ${isModal ? 'text-white' : 'text-sky-800'} text-center mt-2 p-5 rounded`}>
+                댓글 관리
+            </div>
+            
             {
                 commentList === null ?
                     <div className="text-xl font-bold text-center bg-sky-50 mt-2 p-5 rounded">조회중입니다...</div>
@@ -209,8 +224,13 @@ export default function CommentPage() {
                         <div className="text-xl font-bold text-center bg-sky-600 text-white mt-2 p-5 rounded">조회된 항목이 없습니다.</div>
             }
             {
-                <div className={`p-5 flex justify-between items-center ${commentList && commentList.length > 0 ? '' : 'hidden'}`}>
-                    <div></div>
+                <div className={`p-5 grid grid-cols-[20%_60%_20%] justify-between items-center`}>
+                    <div>
+                        {
+                            checkedIdList.size > 0 &&
+                            <button className='bg-red-400 rounded text-white px-3 py-1 cursor-pointer' onClick={deleteItems}>선택 삭제</button>
+                        }
+                    </div>
                     <div className="flex justify-center items-center gap-x-5">
                         <TailSelect ref={searchTypeRef}
                             opk={Object.keys(SearchTypes)}
@@ -222,15 +242,14 @@ export default function CommentPage() {
                                     pageNo.current = 1;
                                     fetchData();
                                 }
-                            }} className="w-full p-2.5 bg-white border border-sky-300 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 cursor-pointer" />
+                            }} className="w-full p-2.5 bg-white border border-sky-300 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500" />
                         </div>
                     </div>
-                    <div>
-                        <button className='bg-sky-400 rounded text-white px-3 py-1 cursor-pointer' onClick={deleteItems}>선택 삭제</button>
-                    </div>
+                    <div></div>
                 </div>
             }
             {
+                commentList && commentList.length > 0 &&
                 <Pagination totalCount={totalCount} numOfRows={numOfRows} pageNo={pageNo.current} changePage={changePage} className="" currClassName="bg-sky-200" liClassName="bg-sky-50" />
             }
         </>

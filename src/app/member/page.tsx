@@ -136,6 +136,10 @@ export default function MemberPage() {
 
     return (
         <>
+            <div className={`text-4xl font-bold ${isModal ? 'text-white' : 'text-sky-800'} text-center mt-2 p-5 rounded`}>
+                사용자 관리
+            </div>
+            
             <div className="p-5 grid grid-cols-4 space-x-5 bg-sky-50 rounded-lg">
                 <TailSelect ref={selectRoleRef}
                     opk={prependAllToList('', Object.keys(Roles))}

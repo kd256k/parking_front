@@ -167,6 +167,10 @@ export default function BoardPage() {
 
     return (
         <>
+            <div className={`text-4xl font-bold ${isModal ? 'text-white' : 'text-sky-800'} text-center mt-2 p-5 rounded`}>
+                주차장 목록
+            </div>
+
             <div className="p-5 grid grid-cols-5 space-x-5 bg-sky-50 rounded-lg">
                 <TailSelect ref={selectRegionMainRef}
                     opk={prependAllToList('', regionMainList)}

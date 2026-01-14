@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function Page() {
   return (
-    <div className="p-10 bg-blue-100">
+    <div className="p-10 bg-blue-100 rounded-xl">
       <div className="font-bold text-3xl text-center">전국 주차장 정보 안내 시스템</div>
       <div className="text-zinc-500 text-sm text-right pt-4">Version 1.0.20260121</div>
       <div className="w-123 mx-auto ">

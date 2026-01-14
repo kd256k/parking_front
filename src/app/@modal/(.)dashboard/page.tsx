@@ -8,7 +8,7 @@ import AutoFitScale from "@/components/AutoFitScale";
 export default function Page() {
     return (
         <Modal containerClassName='w-full max-w-[85%] px-4'>
-            <AutoFitScale ratio='aspect-2/1'>
+            <AutoFitScale ratio='aspect-2/1 rounded-xl'>
                 <DashboardPage />
             </AutoFitScale>
         </Modal>
