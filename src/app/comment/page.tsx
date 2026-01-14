@@ -8,12 +8,14 @@ import { TailTableHeader } from "@/types/tailtable";
 import { fetchAPI } from "@/utils/fetchAPI";
 import { useIsModal, useModalRouter } from "@/utils/ModalUtil";
 import { ChangeEvent, MouseEvent, Ref, useEffect, useRef, useState } from "react";
-
+import { format, parseISO} from 'date-fns';
+import { FaStar } from 'react-icons/fa';
 
 const SearchTypes = {
     CONTENT: '내용',
     PARKING_NAME: '주차장명',
     MEMBER_NAME: '사용자명',
+    
 }
 
 function CommentCheckbox({ ref, onChange = () => { }, item, checked }: { ref?: Ref<HTMLInputElement>, onChange?: (e: ChangeEvent<HTMLInputElement>, item?: CommentForManagement) => void, item?: CommentForManagement, checked?: boolean }) {
@@ -80,7 +82,7 @@ export default function CommentPage() {
         {
             key: 'check',
             name: <CommentCheckbox onChange={onAllCheckBoxChange} checked={checkAll} />,
-            className: 'text-center w-[5%]',
+            className: 'text-center w-[10%]',
             cell: (item) => <CommentCheckbox onChange={onCheckBoxChange} item={item} checked={checkedIdList.has(item.id)} />
         },
         {
@@ -90,13 +92,36 @@ export default function CommentPage() {
             cell: (item) => <span>{item.parking.parkingName}</span>
         },
         {
+            key: 'member_name',
+            name: '작성자명',
+            className: 'text-center w-[10%]',
+            cell: (item) => <span>{item.member.name}</span>
+        },
+        {
             key: 'content',
             name: '내용',
-            className: 'w-[50%]',
+            className: 'w-[30%]',
             cell: (_, value) => <span className='truncate'>{value}</span>
         },
+        {
+            key: 'rate',
+            name: '평점',
+            className: 'text-center w-[15%]',
+            cell: (_, value) => <span className="items-center font-bold flex flex-col"><FaStar size={20} color="#FFD700"/>{value}</span>,
+        },
+        {
+            key: 'createdDate',
+            name: '시간',
+            className: 'text-center w-[15%]',
+            cell: (_, value) => <span>{getFormattedDate(value)}</span>
+        },        
     ];
-
+    
+        const getFormattedDate = (dateStr: string) => {
+            const date = parseISO(dateStr);
+    
+            return format(date, 'yyyy-MM-dd HH:mm:ss');
+        };
 
     // 데이터 조회
     const fetchData = async () => {
@@ -129,7 +154,7 @@ export default function CommentPage() {
         setCommentList(data.content);
         setTotalCount(data.totalElements);
 
-        console.log(data);
+        console.log('전체 데이터', data);
     }
 
     // Pagination 페이지 변경 이벤트
@@ -172,7 +197,8 @@ export default function CommentPage() {
         const url = '/admin/comment/' + Array.from(checkedIdList).join(',');
 
         console.log(url);
-
+        
+        const res = await fetchAPI(url,{method:"DELETE"});
         
     }
 

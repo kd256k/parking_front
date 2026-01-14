@@ -41,6 +41,8 @@ export default function CommentBlock({ data, onEdit, onDelete }: { data: Comment
         saveData.rate = editRating;
         onEdit(saveData);
         setIsEditing(false);
+
+        console.log(data);
     };
 
     const handleCancel = () => {
