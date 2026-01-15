@@ -1,72 +1,73 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, ReactNode } from 'react';
 
-export default function AutoFitScale({ ratio='aspect-video', children }: { ratio?: string, children: React.ReactNode }) {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const contentRef = useRef<HTMLDivElement>(null);
-    const [scale, setScale] = useState(1);
+export default function AutoFitScale({
+  baseWidth = 1920, baseHeight = 1080, children,
+}: {baseWidth?: number, baseHeight?: number, children: ReactNode}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
 
-    const updateScale = () => {
-        const container = containerRef.current;
-        const content = contentRef.current;
-        if (!container || !content) return;
+  const updateScale = () => {
+    const container = containerRef.current;
+    if (!container) return;
 
-        // 1. 컨테이너 높이
-        const containerHeight = container.clientHeight;
+    // 1. 부모 컨테이너의 현재 크기
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
 
-        // 2. 컨텐츠의 '원래' 높이를 구하기 위해 임시로 스케일 리셋 후 측정하고 싶지만,
-        // 간단히 현재 scrollHeight와 scale 역산을 이용하거나, 
-        // 브라우저가 레이아웃을 다시 잡도록 유도해야 합니다.
-        // 여기서는 content.scrollHeight가 스케일링 전 실제 높이를 반영한다고 가정합니다.
+    // 2. 기준 해상도 (콘텐츠의 고정 크기)
+    const targetWidth = baseWidth;
+    const targetHeight = baseHeight;
 
-        // 하지만 가장 확실한 방법은 "일단 너비 100%일 때의 높이"를 아는 것입니다.
-        // 여기서는 간단하게 "현재 높이가 넘치면 줄인다"는 로직을 반복 보정합니다.
+    // 0 나눗셈 방지
+    if (targetWidth === 0 || targetHeight === 0) return;
 
-        const contentHeight = content.scrollHeight;
+    // 3. 가로/세로 비율 중 더 작은 쪽을 택해 'contain' 효과 (전부 다 보이게)
+    //    만약 꽉 채우려면(cover) Math.max 사용
+    const widthRatio = containerWidth / targetWidth;
+    const heightRatio = containerHeight / targetHeight;
+    
+    // 비율 유지하며 부모 안에 쏙 들어가는 스케일
+    const newScale = Math.min(widthRatio, heightRatio);
 
-        if (contentHeight > containerHeight && contentHeight > 0) {
-            const newScale = containerHeight / contentHeight;
-            // 너무 작아지지 않게 최소값(0.2) 제한
-            setScale(Math.max(newScale, 0.2));
-        } else {
-            setScale(1);
-        }
+    setScale(newScale);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', updateScale);
+    
+    // 초기 실행 (마운트 직후 레이아웃 잡힐 시간 확보)
+    const timer = setTimeout(updateScale, 0);
+
+    return () => {
+      window.removeEventListener('resize', updateScale);
+      clearTimeout(timer);
     };
+  }, [baseWidth, baseHeight]); // 해상도 바뀌면 재계산
 
-    useEffect(() => {
-        // 윈도우 리사이즈 대응
-        window.addEventListener('resize', updateScale);
-
-        // 초기 실행 (약간의 지연을 주어 렌더링 완료 후 측정)
-        const timer = setTimeout(updateScale, 100);
-
-        return () => {
-            window.removeEventListener('resize', updateScale);
-            clearTimeout(timer);
-        };
-    }, [children]);
-
-    // 역수 너비 계산 (scale이 0.5면 width는 200%)
-    const inverseWidth = `${(1 / scale) * 100}%`;
-
-    return (
-        <div
-            ref={containerRef}
-            className={`w-full ${ratio} overflow-hidden relative bg-white border`}
-        >
-            <div
-                ref={contentRef}
-                style={{
-                    transform: `scale(${scale})`,
-                    transformOrigin: 'top left', // 중요: 왼쪽 위 기준
-                    width: inverseWidth,         // 중요: 줄어든 만큼 너비 늘리기
-                    height: 'auto',
-                }}
-                className="absolute top-0 left-0"
-            >
-                {children}
-            </div>
-        </div>
-    );
+  return (
+    <div
+      ref={containerRef}
+      className="w-full h-full overflow-hidden relative flex items-center justify-center"
+    >
+      <div
+        style={{
+          // 1. 고정 해상도 크기 강제
+          width: baseWidth,
+          height: baseHeight,
+          
+          // 2. 스케일 적용 (중앙 정렬을 위해 transform 사용)
+          transform: `scale(${scale})`,
+          transformOrigin: 'center center', // 중앙 기준 축소/확대
+          
+          // 3. 레이아웃 붕괴 방지 (flex shrink 방지 등)
+          flexShrink: 0, 
+        }}
+        className="overflow-hidden" // 내부 콘텐츠 스타일
+      >
+        {children}
+      </div>
+    </div>
+  );
 }

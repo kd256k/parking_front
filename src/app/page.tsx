@@ -1,3 +1,5 @@
+import IntroPage from "./intro";
+
 export default function Home() {
-  return null;
+  return <IntroPage />;
 }

@@ -11,7 +11,7 @@ import { loginUserAtom } from "@/atoms/atom";
 import { useIsModal, useModalRouter } from "@/utils/ModalUtil";
 import { fetchAPI } from "@/utils/fetchAPI";
 import { logout } from "./UserInfo";
-
+import Logo from "@/components/Logo";
 export default function LoginPage() {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -52,7 +52,7 @@ export default function LoginPage() {
                 if(isModal) {
                     router.back();
                 } else {
-                    router.push('/');
+                    router.push('/map');
                 }
                 return;
             }
@@ -77,7 +77,7 @@ export default function LoginPage() {
         if(isModal) {
             router.back();
         } else {
-            router.push('/');
+            router.push('/map');
         }
     }
 
@@ -117,7 +117,9 @@ export default function LoginPage() {
                 </>
                 :
                 <>
-                    <div className="text-3xl font-bold mb-4 text-sky-700">로그인</div>
+                    <div className="text-3xl font-bold mb-8 text-sky-700">
+                        <Logo scale={1} includeSub={false} />
+                    </div>
                     <div className="grid grid-cols-[30%_70%] items-center justify-center mx-10 mb-4 w-80">
                         <label htmlFor="username" className="w-full text-right font-bold text-lg text-sky-700 pr-5">아이디</label>
                         <input ref={idRef} className="border border-sky-700 p-1 rounded bg-white" type="text" id="username" placeholder="아이디를 입력하세요" />

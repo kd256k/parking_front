@@ -29,7 +29,7 @@ export default function OAuth2Callback() {
 
                     setLoginUser(loginUserInfo);
                     
-                    router.push('/');
+                    router.push('/map');
                 } else {
                     alert("JWT 검증 실패");
                     router.push("/login");

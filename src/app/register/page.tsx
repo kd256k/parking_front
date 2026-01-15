@@ -1,5 +1,6 @@
 'use client'
 
+import Logo from "@/components/Logo";
 import { fetchAPI } from "@/utils/fetchAPI";
 import { validatePassword, validateUserId } from "@/utils/StringValidator";
 import { useRouter } from "next/navigation";
@@ -90,7 +91,9 @@ export default function RegisterPage() {
 
     return (
         <form onSubmit={handleSubmit} className="flex mx-auto flex-col justify-center items-center rounded-xl w-100 m-10 p-10 bg-sky-50">
-            <div className="text-3xl font-bold mb-4 text-sky-700">회원가입</div>
+            <div className="text-3xl font-bold mb-8 text-sky-700">
+                <Logo scale={1} includeSub={false} />
+            </div>
             <div className="grid grid-cols-[40%_60%] items-center justify-center mx-10 mb-4 w-90">
                 <label htmlFor="id" className="w-full text-right font-bold text-lg text-sky-700 pr-5">아이디</label>
                 <input className="border border-sky-700 p-1 rounded bg-white mr-5" type="text" name="id" placeholder="아이디 입력" />
