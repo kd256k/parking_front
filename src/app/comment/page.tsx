@@ -110,7 +110,7 @@ export default function CommentPage() {
             cell: (_, value) => <div className="justify-center items-center flex flex-row font-bold gap-2">
                                     <FaStar size={20} color="#FFD700"/>
                                     <div className="pt-1">{value}</div>
-                                </div>,
+                                </div>
         },
         {
             key: 'createdDate',
@@ -186,7 +186,6 @@ export default function CommentPage() {
 
     // 삭제 버튼 이벤트
     const deleteItems = async () => {
-        /** TODO 삭제 API 호출 구현 필요 */
         
         if(checkedIdList.size === 0) {
             alert('삭제할 항목을 선택하세요.');
@@ -203,6 +202,15 @@ export default function CommentPage() {
         
         const res = await fetchAPI(url,{method:"DELETE"});
         
+        if (!res.ok) {
+            alert("삭제 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주십시오.");
+            return;
+        }
+
+        await fetchData();
+        
+        setCheckedIdList(new Set());
+        setCheckAll(false);
     }
 
     // 초기 로드
