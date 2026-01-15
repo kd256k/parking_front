@@ -25,7 +25,7 @@ export default function Page() {
   const [data, setData] = useState<ParkingDashboardResponse | null>();
   const [regionList, setRegionList] = useState<string[]>([]);
   const [selectedRegion, setSelectedRegion] = useState<string>("전국");
-  const [selectedRegionColor, setSelectedRegionColor] = useState<string>("");
+  //const [selectedRegionColor, setSelectedRegionColor] = useState<string>("");
 
 
   const [countByRegionOption, setCountByRegionOption] = useState<ChartOption>();
@@ -83,7 +83,7 @@ export default function Page() {
       setCountByTypeOption(createPieChartOption(data.countByType));
       setCountByFeeInfoOption(createPieChartOption(data.countByFeeInfo));
 
-      setSelectedRegionColor(selectedRegion === '전국' ? '#fff' : setColorByCount(data.countAllByRegion.find(item => item.locale === selectedRegion)!.count));
+      //setSelectedRegionColor(selectedRegion === '전국' ? '#fff' : setColorByCount(data.countAllByRegion.find(item => item.locale === selectedRegion)!.count));
     }
 
   }, [data]);
@@ -92,12 +92,13 @@ export default function Page() {
    * 지도용 함수
    ***********************************************/
   const setColorByCount = (count: number) => {
+    //if (selectedRegion !== '전국') return '#b9e9fe';
 
     // 1. 수량 기준 배열 (큰 숫자부터 내림차순)
     const thresholds = [2500, 1000, 800, 600, 500, 300];
 
     // 7단계 색상 배열 (진한 색 -> 연한 색 순서)
-    const colors = [
+    const nonSelectedColors = [
       "#00bcff", // 7번 (count > 2500)
       "#21c5ff", // 6번 (count > 2000)
       "#47ceff", // 5번 (count > 1000)
@@ -106,6 +107,20 @@ export default function Page() {
       "#b9e9fe", // 2번 (count > 100)
       "#dff2fe"  // 1번 (기본값 / 100 이하)
     ];
+
+    const selectedColors = [
+      "#c0efff", // 7번 (count > 2500) - 가장 선명한 연한 블루
+      "#c8f1ff", // 6번 (count > 2000)
+      "#d1f4ff", // 5번 (count > 1000)
+      "#daf7ff", // 4번 (count > 500)
+      "#e3faff", // 3번 (count > 200)
+      "#ecfdff", // 2번 (count > 100)
+      "#f5feff"  // 1번 (기본값 / 100 이하) - 거의 흰색에 가까운 블루
+    ];
+
+    const colors = selectedRegion === '전국' ? nonSelectedColors : selectedColors;
+
+    // 기본값
 
     let color = colors[colors.length - 1];
 
@@ -145,10 +160,11 @@ export default function Page() {
                     setColorByCount={setColorByCount}
                     data={data.countAllByRegion}
                     selectedRegion={selectedRegion}
-                    selectedColor={selectedRegionColor}
+                    selectedColor='#00bcff'
+                    diagonalWidth={1}
                     diagonalColor='rgba(0,0,0,0.5)'
                     setSelectedRegion={setSelectedRegion}
-                    hoverColor='#0069a8'
+                    hoverColor='#00a6f4'
                     customTooltip={<CustomTooltip />}
                   />
                 </div>

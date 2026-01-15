@@ -40,7 +40,7 @@ export default function CommentPage() {
 
     const isModal = useIsModal();
 
-    const { router: modalRouter } = useModalRouter();
+    const { push: modalPush, router: modalRouter } = useModalRouter();
 
     const [commentList, setCommentList] = useState<CommentForManagement[] | null>(null); // 조회된 댓글 목록
 
@@ -77,7 +77,7 @@ export default function CommentPage() {
 
     }
 
-    /** TODO 필드 추가 및 가로 폭, 스타일 조절 필요 */
+    // 테이블 헤더 정보
     const headers: TailTableHeader<CommentForManagement>[] = [
         {
             key: 'check',
@@ -89,23 +89,23 @@ export default function CommentPage() {
             key: 'parking_name',
             name: '주차장명',
             className: 'text-center w-[20%]',
-            cell: (item) => <span>{item.parking.parkingName}</span>
+            cell: (item) => <span className='cursor-pointer' onClick={(e)=>{e.stopPropagation(); modalPush('/board/' + item.parking.parkingId)}}>{item.parking.parkingName}</span>
         },
         {
             key: 'member_name',
             name: '작성자명',
             className: 'text-center w-[10%]',
-            cell: (item) => <span>{item.member.name}</span>
+            cell: (item) => <span className='cursor-pointer' onClick={(e)=>{e.stopPropagation(); modalPush('/member/user/' + item.member.id)}}>{item.member.name}</span>
         },
         {
             key: 'content',
             name: '내용',
-            className: 'w-[30%]',
+            className: 'w-[20%]',
             cell: (_, value) => <span className='truncate'>{value}</span>
         },
         {
             key: 'rate',
-            name: '평점',
+            name: '별점',
             className: 'text-center w-[15%]',
             cell: (_, value) => <div className="justify-center items-center flex flex-row font-bold gap-2">
                                     <FaStar size={20} color="#FFD700"/>
@@ -113,8 +113,14 @@ export default function CommentPage() {
                                 </div>
         },
         {
+            key: 'edited',
+            name: '수정여부',
+            className: 'text-center w-[10%]',
+            cell: (_, value) => <span>{value ? '수정됨' : ''}</span>
+        },
+        {
             key: 'createdDate',
-            name: '시간',
+            name: '등록일시',
             className: 'text-center w-[15%]',
             cell: (_, value) => <span>{getFormattedDate(value)}</span>
         },        
