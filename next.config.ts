@@ -15,15 +15,6 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  async redirects() { 
-    return [
-      {
-        source: '/',
-        destination: '/map',
-        permanent: true, // redirects() 안에서만 유효한 옵션입니다.
-      },
-    ];
-  },
 };
 
 export default nextConfig;

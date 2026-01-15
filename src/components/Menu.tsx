@@ -51,7 +51,7 @@ export default function Menu() {
                         onClick={()=>setMenuOpen(false)}>
                         <UserInfo />
                         
-                        <MenuItem href="/board" title="목록" />
+                        <MenuItem href="/board" title="주차장 목록" />
                         <MenuItem href="/dashboard" title="통계" />
                         <MenuLink href="/about" title="프로그램에 대해" />
                         
