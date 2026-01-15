@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { User } from "@/types/user";
 import { useAtom } from "jotai";
 import { loginUserAtom } from "@/atoms/atom";
+import Logo from "@/components/Logo";
 
 export default function OAuth2Callback() {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -43,5 +44,8 @@ export default function OAuth2Callback() {
         fetchCallback();
     }, [router]);
 
-    return <p>로그인 처리중...</p>;
+    return <div className="w-full h-screen bg-sky-50 flex flex-col justify-center items-center">
+        <Logo />
+        <div className="mt-5 font-bold text-xl">SNS 로그인 처리중...</div>
+    </div>;
 };

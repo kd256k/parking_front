@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "전국 주차장 정보",
   description: "",
+  icons: {
+    icon: '/favicon.png'
+  },
 };
 
 export default function RootLayout({
