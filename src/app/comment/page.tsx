@@ -107,7 +107,10 @@ export default function CommentPage() {
             key: 'rate',
             name: '평점',
             className: 'text-center w-[15%]',
-            cell: (_, value) => <span className="items-center font-bold flex flex-col"><FaStar size={20} color="#FFD700"/>{value}</span>,
+            cell: (_, value) => <div className="justify-center items-center flex flex-row font-bold gap-2">
+                                    <FaStar size={20} color="#FFD700"/>
+                                    <div className="pt-1">{value}</div>
+                                </div>,
         },
         {
             key: 'createdDate',
