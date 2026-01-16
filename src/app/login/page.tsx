@@ -89,7 +89,7 @@ export default function LoginPage() {
 
         // 실제 로그인 상태 확인
         (async () => {
-            const res = await fetchAPI('/member/myinfo');
+            const res = await fetchAPI('/member/ping');
 
             if(!res.ok) {
                 setLoginState(false);

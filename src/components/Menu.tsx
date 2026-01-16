@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { IoMenu } from "react-icons/io5";
 import Link from 'next/link';
-import UserInfo from '@/app/login/UserInfo';
 import { RxOpenInNewWindow } from "react-icons/rx";
-import MenuAdmin from './MenuAdmin';
+
+
+export const menuLinkClassName = "text-lg hover:bg-sky-200 px-3 py-2 cursor-pointer"
 
 export function MenuLink({href, title}:{href:string, title:string}){
     return (
-        <Link href={href} className="text-lg hover:bg-sky-200 px-3 py-2 cursor-pointer">{title}</Link>
+        <Link href={href} className={menuLinkClassName}>{title}</Link>
     )
 }
 
@@ -15,12 +16,12 @@ export function MenuItem({href, title}:{href:string, title:string}){
     return (
         <div className="grid grid-cols-[80%_20%]">
             <MenuLink href={href} title={title} />
-            <a href={href} target="_blank" className="text-lg hover:bg-sky-200 px-3 pt-3 cursor-pointer flex justify-center" title="새 탭으로 열기"><RxOpenInNewWindow /></a>
+            <a href={href} target="_blank" className={menuLinkClassName} title="새 탭으로 열기"><RxOpenInNewWindow /></a>
         </div>
     )
 }
 
-export default function Menu() {
+export default function Menu({children}:{children:React.ReactNode}) {
 
     // 메뉴 상태
     const [menuOpen, setMenuOpen] = useState(false);
@@ -45,17 +46,11 @@ export default function Menu() {
             {
                 <>
                     <div className={`absolute w-50 flex flex-col right-6 top-20 z-50 bg-sky-50 rounded-lg shadow-lg overflow-hidden
-                        text-gray-700 transition-all
+                        text-gray-700 transition-all 
                         ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
                         `}
                         onClick={()=>setMenuOpen(false)}>
-                        <UserInfo />
-                        
-                        <MenuItem href="/board" title="주차장 목록" />
-                        <MenuItem href="/dashboard" title="주차장 현황 통계" />
-                        <MenuLink href="/about" title="프로그램에 대해" />
-                        
-                        <MenuAdmin />
+                        {children}
                     </div>
                     <div className={`absolute w-screen h-screen left-0 top-0 z-40
                         ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}

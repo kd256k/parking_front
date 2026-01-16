@@ -31,7 +31,7 @@ export default function Page() {
 
             <div className="text-sm italic bg-sky-700 p-2 text-white">
               <div className="font-bold">KDT3 미니프로젝트</div>
-              <div>개발참여 : 김종현, 유효정, 최윤영</div>
+              <div>개발참여 : 김종현(SpringBoot, MariaDB), 유효정(Next.js), 최윤영(Next.js)</div>
               <div>활용 데이터 출처 : 공공데이터포털(한국교통안전공단_전국공영주차장정보)</div>
             </div>
 

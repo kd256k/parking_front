@@ -33,19 +33,39 @@ const fetchSub = async (url: string, options: RequestInit = {}) => {
 };
 
 // 2. 토큰 갱신 함수
-const refreshToken = async () => {
-  // 쿠키(refresh_token)가 자동으로 백엔드에 전송됨
-  const res = await fetch(`${BACKEND_URL}/auth/refresh`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include'
-  });
-
-  if (res.ok) {
-    // 성공 시 백엔드가 Set-Cookie 헤더를 줌 -> 브라우저/Nginx가 받아서 쿠키 갱신
-    return true;
+let isRefreshing = false;
+let refreshPromise: Promise<boolean> | null = null;
+const refreshToken = async (): Promise<boolean> => {
+  // 이미 갱신 중이라면 진행 중인 Promise 반환 (중복 호출 방지)
+  if (isRefreshing && refreshPromise) {
+    return refreshPromise;
   }
-  return false;
+
+  isRefreshing = true;
+
+  // 갱신 로직을 Promise에 할당
+  refreshPromise = (async () => {
+    try {
+      const res = await fetch(`${BACKEND_URL}/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+
+      if (res.ok) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    } finally {
+      // 갱신 완료 후 초기화
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
 };
 
 // 3. 메인 Fetch 함수 (Retry 로직 포함)
@@ -61,7 +81,6 @@ export const fetchAPI = async (url: string, options: RequestInit = {}) => {
       // 따라서 SSR 401은 그냥 에러로 반환하고 클라이언트가 처리하게 함
       if (isServer) {
         redirect('/login');
-        //return response; 
       }
 
       // CSR에서만 갱신 시도
@@ -72,7 +91,8 @@ export const fetchAPI = async (url: string, options: RequestInit = {}) => {
         // 갱신 실패 (리프레시 토큰도 만료됨)
         delete localStorage.__loginUserInfo__;
         if (window.location.pathname !== '/login') {
-          redirect('/login');
+          alert('로그인 페이지로');
+          redirect('/login?_refresh_failed_=true');
         }
         return response;
       }

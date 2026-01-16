@@ -5,7 +5,7 @@ import { use, useEffect, useState } from 'react';
 import { fetchAPI } from '@/utils/fetchAPI';
 import { Parking, ParkingCluster, ParkingGroup } from '@/types/parking';
 
-import Menu from '@/components/Menu';
+import Menu, { MenuItem, MenuLink, menuLinkClassName } from '@/components/Menu';
 import MyLocationButton from './MyLocationButton';
 import DesktopPanel from './DesktopPanel';
 import MobilePanel from './MobilePanel';
@@ -16,13 +16,15 @@ import ParkingGroupList from './ParkingGroupList';
 import { useAtom } from 'jotai';
 import { showGuideAtom } from '@/atoms/atom';
 import Guide from './Guide';
+import UserInfo from '../login/UserInfo';
+import MenuAdmin from '@/components/MenuAdmin';
 
 
 export default function Page() {
 
     const [mounted, setMounted] = useState(false);
 
-    const [showGuide, _] = useAtom<boolean | null>(showGuideAtom);
+    const [startShowGuide, setStartShowGuide] = useAtom(showGuideAtom);
 
     const [mapObj, setMapObj] = useState<kakao.maps.Map | null>(null);
 
@@ -54,6 +56,10 @@ export default function Page() {
     const { push: modalPush } = useModalRouter();
 
     const { setModalEventHandlers } = useModalEvents()
+
+
+    // 가이드 표시 여부
+    const [showGuideCurrent, setShowGuideCurrent] = useState(true);
 
     // 모달 이벤트
     useEffect(() => {
@@ -98,7 +104,12 @@ export default function Page() {
 
     useEffect(()=>{
         setMounted(true);
-    },[])
+    },[]);
+
+    const showGuide = () => {
+        setStartShowGuide(true);
+        setShowGuideCurrent(true);
+    }
 
     if(!mounted) return;
 
@@ -161,9 +172,10 @@ export default function Page() {
     }
 
 
+
     return (
         <>
-            {showGuide && <Guide />}
+            {startShowGuide && <Guide showGuideCurrent={showGuideCurrent} setShowGuideCurrent={setShowGuideCurrent} />}
             <main className="relative w-screen h-screen overflow-hidden bg-gray-100">
                 {/* ======================= */}
                 {/* 지도 영역 (배경)     */}
@@ -269,7 +281,19 @@ export default function Page() {
                 {/* ======================= */}
                 {/* 메뉴 버튼 (FAB)   */}
                 {/* ======================= */}
-                <Menu />
+                <Menu>
+                    <UserInfo />
+                        
+                    <MenuItem href="/board" title="주차장 목록" />
+                    <MenuItem href="/dashboard" title="주차장 현황 통계" />
+                    
+                    <div className='border-b border-sky-200'></div>
+
+                    <div className={menuLinkClassName} onClick={()=>showGuide()}>가이드 보기</div>
+                    <MenuLink href="/about" title="프로그램에 대해" />
+                    
+                    <MenuAdmin />
+                </Menu>
             </main>
         </>
     );
