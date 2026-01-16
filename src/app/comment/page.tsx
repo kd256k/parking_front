@@ -101,16 +101,16 @@ export default function CommentPage() {
             key: 'content',
             name: '내용',
             className: 'w-[20%]',
-            cell: (_, value) => <span className='truncate'>{value}</span>
+            cell: (_, value) => <span className='block truncate'>{value}</span>
         },
         {
             key: 'rate',
             name: '별점',
             className: 'text-center w-[15%]',
-            cell: (_, value) => <div className="justify-center items-center flex flex-row font-bold gap-2">
+            cell: (_, value) => <span className="justify-center items-center flex flex-row font-bold gap-2">
                                     <FaStar size={20} color="#FFD700"/>
-                                    <div className="pt-1">{value}</div>
-                                </div>
+                                    <span className="pt-1">{value}</span>
+                                </span>
         },
         {
             key: 'edited',
@@ -126,11 +126,11 @@ export default function CommentPage() {
         },        
     ];
     
-        const getFormattedDate = (dateStr: string) => {
-            const date = parseISO(dateStr);
-    
-            return format(date, 'yyyy-MM-dd HH:mm:ss');
-        };
+    const getFormattedDate = (dateStr: string) => {
+        const date = parseISO(dateStr);
+
+        return format(date, 'yyyy-MM-dd HH:mm:ss');
+    };
 
     // 데이터 조회
     const fetchData = async () => {
