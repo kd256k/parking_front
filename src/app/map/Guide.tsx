@@ -5,7 +5,6 @@ import { useAtom } from 'jotai';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Nanum_Pen_Script, Yeon_Sung } from 'next/font/google';
 import Image from 'next/image';
-import Logo from '@/components/Logo';
 
 
 const penFont = Nanum_Pen_Script({
@@ -64,7 +63,7 @@ export default function Guide({ showGuideCurrent, setShowGuideCurrent }: { showG
                 </div>
                 <div className='w-1/3 h-full flex flex-col justify-center'>
                     <div className='flex-1 flex flex-col justify-center items-center'>
-                        <Image src="/logo.png" alt="logo" width={500} height={500} />
+                        <Image src="/logo.png" alt="logo" width={500} height={175} />
                         <div className="mt-15 text-3xl font-bold text-shadow-lg text-shadow-black/50">전국 주차장 정보 안내 시스템</div>
                         <div className={`${penFont.className} mt-2 mb-15 text-7xl font-bold text-shadow-lg text-shadow-black`}>
                             지도 활용 가이드

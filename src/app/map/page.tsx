@@ -107,6 +107,7 @@ export default function Page() {
     },[]);
 
     const showGuide = () => {
+        setMainOpen(true);
         setStartShowGuide(true);
         setShowGuideCurrent(true);
     }

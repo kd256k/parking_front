@@ -91,8 +91,7 @@ export const fetchAPI = async (url: string, options: RequestInit = {}) => {
         // 갱신 실패 (리프레시 토큰도 만료됨)
         delete localStorage.__loginUserInfo__;
         if (window.location.pathname !== '/login') {
-          alert('로그인 페이지로');
-          redirect('/login?_refresh_failed_=true');
+          redirect('/login');
         }
         return response;
       }

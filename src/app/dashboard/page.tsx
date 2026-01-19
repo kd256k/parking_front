@@ -180,7 +180,7 @@ export default function Page() {
             </div>
             <div className='w-full h-full absolute top-0 left-0 flex flex-col justify-between p-5 z-10 pointer-events-none '>
               <div className="w-full h-1/6 flex">
-                <div className="w-1/3 text-6xl font-bold text-sky-900 flex items-center pl-10">주차장 현황 통계</div>
+                <div className="w-1/2 text-5xl font-bold text-sky-900 flex items-end pl-10 pb-15"><span className="text-6xl text-sky-600 mr-5">{selectedRegion}</span> 주차장 현황 통계</div>
                 <div className="flex-1 flex justify-end">
                   <div className="w-250 flex gap-x-4">
                     <ContainerCard caption="전체 주차장 수" item={data.totalParkingCount} />

@@ -18,15 +18,15 @@ const KoreanFont = Chiron_GoRound_TC({
 });
 
 
-type Step = '' | 'marker_logo' | 'message' | 'message_subtitle' | 'main_logo' | 'main_logo_message'
+type Step = '' | 'marker_logo' | 'marker_logo_subtitle' | 'marker_logo_subtitle_hide' | 'message' | 'message_subtitle' | 'main_logo' | 'main_logo_message'
 
 export default function IntroPage() {
     const [step, setStep] = useState<Step>('marker_logo');
     const router = useRouter();
 
     useEffect(() => {
-        const step_list = ['marker_logo','message', 'message_subtitle', 'main_logo', 'main_logo_message'];
-        const step_millis = [0, 3000, 2000, 5000, 4000];
+        const step_list = ['marker_logo','marker_logo_subtitle','marker_logo_subtitle_hide','message', 'message_subtitle', 'main_logo', 'main_logo_message'];
+        const step_millis = [0, 500, 3000, 300, 2000, 5000, 4000];
 
         const timeouts = step_list.map((step, index) => {
             return setTimeout(() => {
@@ -45,21 +45,44 @@ export default function IntroPage() {
 
     return (
         <div className="w-full h-screen bg-black">
+        <div className="absolute invisible">
+            {/* 캐시 미리 로드를 위한 영역 */}
+            <Image src='/logo.png' width={1000} height={1000} alt='' />
+            <CompanyLogo />
+            <div className={`${EnglishFont.className}`}>tmp1</div>
+            <div className={`${KoreanFont.className}`}>tmp1</div>
+        </div>
         <AutoFitScale>
             <div className="w-480 h-270 flex items-center justify-center bg-black overflow-hidden" onClick={goToMap}>
                 <AnimatePresence mode="wait">
-                    {['marker_logo'].includes(step) ? (
-                        <motion.div
-                            key="div1"
-                            initial={{ opacity: 0, scale: 2.2 }}
-                            animate={{ opacity: 1, scale: 2 }}
-                            exit={{ opacity: 0, scale: 1.8 }}
-                            transition={{ duration: 1.5, ease: "easeOut" }}
-                        >
-                            <div className="scale-500">
-                                <CompanyLogo border={false} />
-                            </div>
-                        </motion.div>
+                    {['marker_logo','marker_logo_subtitle','marker_logo_subtitle_hide'].includes(step) ? (
+                        <>
+                            <div className="absolute w-full h-full flex flex-col justify-between items-center">
+                                <div className={`${KoreanFont.className} text-white font-bold text-4xl pt-20 flex flex-col justify-start items-center gap-y-2 h-1/3`}>
+                                    {step === 'marker_logo_subtitle' && <>
+                                    <div className="italic"><span className="line-through">마블</span>마커 스튜디오 제공</div>
+                                    </>}
+                                </div>
+                                <div className={`${EnglishFont.className} text-gray-200 text-5xl flex flex-col justify-center items-start gap-y-2 h-1/3`}>
+                                </div>
+                                <div className={`${KoreanFont.className} text-white font-bold text-3xl pb-20 flex flex-col justify-end items-center gap-y-2 h-1/3`}>
+                                    {step === 'marker_logo_subtitle' && <>
+                                    <div>(저작권 이슈로 없어진 BGM)</div>
+                                    </>}
+                                </div>
+                            </div>                            
+                            <motion.div
+                                key="div1"
+                                initial={{ opacity: 0, scale: 2.2 }}
+                                animate={{ opacity: 1, scale: 2 }}
+                                exit={{ opacity: 0, scale: 1.8 }}
+                                transition={{ duration: 1.5, ease: "easeOut" }}
+                            >
+                                <div className="scale-500">
+                                    <CompanyLogo border={false} />
+                                </div>
+                            </motion.div>
+                        </>
                     ) : 
                     ['message', 'message_subtitle'].includes(step) ? (
                         <motion.div
