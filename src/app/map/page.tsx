@@ -144,7 +144,7 @@ export default function Page() {
 
         if (!res.ok) {
             if (res.status !== 401) {
-                console.log('목록 읽기 실패');
+                //console.log('목록 읽기 실패');
                 alert('목록 읽기 실패');
             }
             return;

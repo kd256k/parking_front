@@ -27,7 +27,7 @@ export default function MyInfoPage() {
     const fetchData = async () => {
         const res = await fetchAPI(`/member/myinfo`);
 
-        console.log(res.status);
+        //console.log(res.status);
         if (!res.ok && res.status !== 401) {
             throw new Error('data fetch error');
         }

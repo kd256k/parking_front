@@ -42,7 +42,7 @@ export default function CommentBlock({ data, onEdit, onDelete }: { data: Comment
         onEdit(saveData);
         setIsEditing(false);
 
-        console.log(data);
+        //console.log(data);
     };
 
     const handleCancel = () => {

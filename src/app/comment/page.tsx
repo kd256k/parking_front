@@ -163,7 +163,9 @@ export default function CommentPage() {
         setCommentList(data.content);
         setTotalCount(data.totalElements);
 
-        console.log('전체 데이터', data);
+        setCheckedIdList(new Set());
+        setCheckAll(false);
+        //console.log('전체 데이터', data);
     }
 
     // Pagination 페이지 변경 이벤트
@@ -204,7 +206,7 @@ export default function CommentPage() {
 
         const url = '/admin/comment/' + Array.from(checkedIdList).join(',');
 
-        console.log(url);
+        //console.log(url);
         
         const res = await fetchAPI(url,{method:"DELETE"});
         
