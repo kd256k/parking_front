@@ -10,7 +10,7 @@ export default function MyLocationButton({
 }: {
     selectedParking: Parking | null;
     setCenter: React.Dispatch<React.SetStateAction<{ lat: number; lng: number }>>;
-    setMyLocation: React.Dispatch<React.SetStateAction<{ lat: number; lng: number }  | null>>;
+    setMyLocation: React.Dispatch<React.SetStateAction<{ lat: number; lng: number } | null>>;
 }) {
     const [isLoadingLocation, setIsLoadingLocation] = useState(false); // 현재위치 로딩
 
@@ -33,11 +33,31 @@ export default function MyLocationButton({
                 setIsLoadingLocation(false); // 로딩 종료
             },
             (error) => {
-                console.error(error);
-                alert('위치 정보를 가져오는데 실패했습니다.');
+                switch (error.code) {
+                    case 1: // PERMISSION_DENIED
+                        console.error("위치 권한이 거부되었습니다.");
+                        alert("위치 권한을 허용해주세요. (브라우저 설정)");
+                        break;
+                    case 2: // POSITION_UNAVAILABLE
+                        console.error("위치 신호를 잡을 수 없습니다.");
+                        alert("현재 위치를 찾을 수 없습니다. 잠시 후 다시 시도해주세요.");
+                        break;
+                    case 3: // TIMEOUT
+                        console.error("위치 확인 시간 초과");
+                        alert("위치 정보를 가져오는 데 시간이 너무 오래 걸립니다.");
+                        break;
+                    default:
+                        console.error("알 수 없는 오류 발생");
+                        alert("위치 확인 중 오류가 발생했습니다.");
+                        break;
+                }
                 setIsLoadingLocation(false); // 에러 시에도 로딩 종료
             },
-            { enableHighAccuracy: true }
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
         );
     };
 
