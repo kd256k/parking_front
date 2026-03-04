@@ -2,8 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  output: 'standalone',
-  
+    
   //Rewrites 설정 추가
   // async rewrites() {
   //   return [
