@@ -69,8 +69,7 @@ INTERNAL_BACKEND_URL=<백엔드 API 서버 URL (SSR용, 선택)>
 Vercel 배포 시 `INTERNAL_BACKEND_URL`은 `NEXT_PUBLIC_BACKEND_URL`과 동일하게 설정하면 됩니다.
 
 ## 관련 레포지토리
-
-- **Backend**: 별도 백엔드 API 서버 (Spring Boot + JWT 인증)
+- **Backend**: [parking_back](https://github.com/runawaysheepkd/parking_back) — Spring Boot 3.5 + MariaDB + JWT + OAuth2 (Google/Naver/Kakao/GitHub)
 
 ## 시연 영상
 [![YouTube](https://img.shields.io/badge/YouTube-시연영상보기-red?logo=youtube)](https://www.youtube.com/watch?v=AlJ2DVAki70)
